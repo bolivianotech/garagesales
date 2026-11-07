@@ -10,7 +10,14 @@ Que el dueño de productos publique y gestione lo que ofrece: foto, precio y can
 - Como **vendedor** quiero editar precio/cantidad, pausar o marcar agotado.
 - Como **vendedor** quiero ver qué se vendió y qué queda.
 
+## Perfiles de vendedor objetivo
+- **Revendedores de TikTok Live:** fardos/cajas de ropa o Amazon con saldos sin vender tras el live; necesitan publicar muchos ítems rápido (carga masiva por fotos, cantidad habitual 1).
+- **Individuos:** zapatos, carteras, gorras, ropa, electrodomésticos, computadoras, televisores.
+- Categorías iniciales: ropa, calzado, accesorios, electrodomésticos, computación, TV/audio, otros. Campo opcional "estado" (nuevo / usado) y "talla".
+
 ## Requisitos
+- FR-015: Carga rápida: seleccionar varias fotos de golpe crea un borrador por foto, que luego se completa con precio y cantidad.
+- FR-016: Cuando un pedido se paga, el producto sale del inventario activo y del catálogo y deja de aparecer como disponible para su vendedor (pasa a "Por entregar", spec 007).
 - FR-010: Crear producto con título, descripción opcional, precio (BS, > 0), cantidad (entero ≥ 0) y 1–5 fotos.
 - FR-011: Fotos se comprimen en el cliente (máx. 1600 px, ≤ 400 KB aprox.) y se aceptan solo JPG/PNG/WebP ≤ 5 MB de origen.
 - FR-012: Estados: borrador, activo, pausado, agotado (automático cuando stock = 0).

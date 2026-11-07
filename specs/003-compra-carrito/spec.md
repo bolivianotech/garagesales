@@ -1,6 +1,6 @@
 # Spec 003 — Catálogo público, carrito y pedido
 
-**Estado:** Draft · **Bloqueada por:** Q4
+**Estado:** Draft · Entrega decidida: **solo retiro en persona** (sin envíos)
 
 ## Objetivo
 Que el comprador explore, arme un carrito y genere un pedido sin sobreventa.
@@ -18,7 +18,7 @@ Que el comprador explore, arme un carrito y genere un pedido sin sobreventa.
 - FR-023: El pedido expira a los 10 min sin pago y libera el stock.
 - FR-024: Un pedido con ítems de varias tiendas se divide lógicamente por tienda para liquidación.
 - FR-025: Historial de pedidos para comprador y vendedor con estados.
-- FR-026: Método de entrega según Q4 (retiro/envío).
+- FR-026: Entrega únicamente por retiro en persona; el checkout muestra ubicación/horario de cada vendedor (spec 007).
 - NFR-004: Con 50 compradores concurrentes sobre 1 unidad, exactamente 1 pedido tiene éxito.
 
 ## Criterios de aceptación

@@ -1,25 +1,33 @@
-# Spec 001 — Autenticación y roles
+# Spec 001 — Autenticación, roles y RBAC
 
-**Estado:** Draft · **Bloqueada por:** Q5
+**Estado:** Draft
 
 ## Objetivo
-Permitir que las personas se registren e ingresen, y que cada una actúe como comprador, vendedor o administrador con permisos correctos.
+Registro/ingreso y control de acceso estricto: comprador, vendedor (aprobado por el admin) y admin.
+
+## Roles
+| Rol | Puede |
+|---|---|
+| `visitor` | Ver catálogo público |
+| `buyer` | Comprar, ver sus pedidos y códigos de retiro |
+| `seller` (aprobado) | Gestionar **solo su** catálogo, sus pedidos por entregar y su estado de cuenta |
+| `admin` | Aprobar/suspender vendedores, ver todo, reportes y liquidaciones |
 
 ## Historias
-- Como **visitante** quiero ver el catálogo sin registrarme.
-- Como **comprador** quiero registrarme con email o Google para comprar.
-- Como **vendedor** quiero crear mi tienda (nombre, descripción, teléfono) para publicar productos.
-- Como **admin** quiero suspender usuarios o productos indebidos.
+- Como **persona** quiero registrarme con email o Google.
+- Como **aspirante a vendedor** quiero solicitar ser vendedor (nombre de tienda, teléfono, tipo: persona / revendedor de TikTok live / etc.) y esperar aprobación.
+- Como **admin** quiero aprobar, rechazar o suspender vendedores.
 
 ## Requisitos
 - FR-001: Registro/ingreso con email+contraseña y Google.
-- FR-002: Todo usuario tiene perfil con nombre y teléfono (obligatorio para comprar).
-- FR-003: Un usuario puede activar el rol vendedor y crear exactamente una tienda (aprobación según Q5).
-- FR-004: Un vendedor solo puede ver y modificar datos de su propia tienda.
-- FR-005: Un admin puede suspender usuarios/tiendas/productos.
-- NFR-001: RLS activa en todas las tablas; tests automáticos de acceso cruzado.
+- FR-002: Perfil con nombre y teléfono (obligatorio para comprar).
+- FR-003: Solicitud de vendedor → estado `pending`; hasta que el admin la apruebe no puede publicar. Un vendedor suspendido no puede publicar ni ver nuevos datos.
+- FR-004: **RBAC estricto:** un vendedor nunca puede leer ni modificar productos, pedidos, pickups ni liquidaciones de otro vendedor (RLS por `store_id`).
+- FR-005: El admin puede aprobar, rechazar y suspender usuarios/tiendas/productos.
+- FR-006: Un comprador solo ve sus propios pedidos y códigos de retiro.
+- NFR-001: RLS activa en todas las tablas; tests automáticos de acceso cruzado entre vendedores y entre compradores.
 
 ## Criterios de aceptación
-- **Dado** un usuario vendedor A, **cuando** intenta editar un producto del vendedor B, **entonces** recibe acceso denegado.
-- **Dado** un visitante anónimo, **cuando** abre el catálogo, **entonces** ve solo productos `active`.
-- **Dado** un usuario suspendido, **cuando** inicia sesión, **entonces** no puede comprar ni publicar.
+- **Dado** el vendedor A, **cuando** consulta la API por un producto del vendedor B (aunque conozca su id), **entonces** no obtiene datos.
+- **Dado** un vendedor `pending`, **cuando** intenta publicar, **entonces** se rechaza.
+- **Dado** el admin, **cuando** aprueba una solicitud, **entonces** el usuario pasa a `seller` y puede publicar.

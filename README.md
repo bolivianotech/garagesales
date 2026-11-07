@@ -25,6 +25,8 @@ Marketplace de garage sales: los **vendedores** publican productos (foto, precio
 
 ## Stack decidido
 
+Retiro en persona · comisión 1 % por transacción · vendedores aprobados por el admin (RBAC estricto) · foco en revendedores de TikTok Live y venta de pertenencias.
+
 PWA (React + Vite + TypeScript) · Supabase (Postgres, Auth, Storage, Realtime, Edge Functions) · API QR Banco Económico · hosting estático (GitHub Pages / Cloudflare Pages / Vercel).
 
 ## Seguridad de secretos

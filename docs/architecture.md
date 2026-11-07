@@ -20,7 +20,14 @@
 | `orders` | id, buyer_id, status(`pending`/`paid`/`expired`/`cancelled`), total_cents, expires_at |
 | `order_items` | order_id, product_id, store_id, qty, unit_price_cents |
 | `payments` | id, order_id, bank_ref, qr_payload, amount_cents, status, paid_at, raw_response |
-| `ledger` | id, payment_id, store_id, gross_cents, fee_cents, net_cents, settled_at |
+| `bank_movements` | id, bank_ref (único), amount_cents, occurred_at, status(`matched`/`unmatched`/`review`), order_id?, raw |
+| `ledger` | id, payment_id, order_item_id, store_id, gross_cents, fee_cents (1 %), net_cents, status(`pending`/`settled`), payout_id? |
+| `payouts` | id, store_id, total_net_cents, paid_at, transfer_ref, created_by |
+| `pickups` | id, order_id, store_id, buyer_id, pickup_code, status(`ready`/`delivered`), delivered_at |
+| `settings` | commission_bps (=100), order_ttl_minutes (=10) |
+
+## Confirmación de pago por conciliación
+Job programado (pg_cron + Edge Function `reconcile-payments`) consulta `accounts/queryMovements` desde la última marca de agua, inserta movimientos en `bank_movements` (idempotente por `bank_ref`), los concilia con pedidos pendientes y, de calzar, ejecuta `confirm_payment(order_id)` en una transacción: pedido `paid`, ledger con comisión, pickups y salida de stock/catálogo. Ver ADR-0002.
 
 ## Reserva de stock
 Función SQL `create_order(items)` en una transacción con `SELECT … FOR UPDATE`; descuenta stock al crear el pedido, y un job (pg_cron) lo devuelve si `expires_at` vence sin pago.

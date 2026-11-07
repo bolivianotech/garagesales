@@ -8,6 +8,9 @@ Cada fase termina con un **criterio de salida** verificable. No se pasa a la sig
 - [ ] Aprobar specs (revisión del dueño del producto).
 **Salida:** specs 001–005 en estado `Approved`.
 
+## Ruta rápida al MVP desplegado ("tiempo récord")
+Orden de valor: **1 → 2 → 3 → 4 (con `MockProvider`) → 7 → desplegar con dominio gratuito (`*.pages.dev`) → 4 real en sandbox → 6 → 5**. Así se prueba el flujo completo en producción de pruebas antes de comprar `garagesales.bo`.
+
 ## Fase 1 — Cimientos (spec 001 + infraestructura)
 1. Crear proyecto Supabase (dev y prod separados).
 2. Monorepo ligero: `apps/pwa`, `supabase/` (migraciones, funciones), `packages/shared` (tipos).
@@ -35,6 +38,11 @@ Cada fase termina con un **criterio de salida** verificable. No se pasa a la sig
 4. Libro mayor (`ledger`) y liquidación a vendedores (según decisión pendiente).
 5. Pruebas en sandbox del banco; luego piloto con montos reales mínimos.
 **Salida:** pago real de prueba confirma el pedido, descuenta stock y notifica al vendedor.
+
+## Fase 4b — Retiro y liquidación (specs 007 y 006)
+1. Reporte "Por entregar" por comprador/vendedor y código de retiro.
+2. Ledger con comisión 1 %, reporte "Saldos por pagar", liquidaciones y validación de cuadre contra el banco.
+**Salida:** el admin ve cuánto pagar a cada vendedor, neto de comisión, y cada vendedor ve solo lo suyo.
 
 ## Fase 5 — PWA y sincronización (spec 005)
 1. Manifest, service worker, instalación en Android/iOS.
