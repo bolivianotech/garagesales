@@ -56,9 +56,11 @@ export function Login() {
         />
       </label>
       <button disabled={busy}>{mode === 'login' ? 'Ingresar' : 'Registrarme'}</button>
-      <button type="button" className="secondary" onClick={google}>
-        Continuar con Google
-      </button>
+      {import.meta.env.VITE_ENABLE_GOOGLE === 'true' && (
+        <button type="button" className="secondary" onClick={google}>
+          Continuar con Google
+        </button>
+      )}
       <button type="button" className="link" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
         {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Ingresa'}
       </button>

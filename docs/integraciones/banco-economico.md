@@ -57,4 +57,4 @@ Nunca en el chat, en el repo ni en el frontend. Dos lugares válidos:
 | H7 | Expiración del token no documentada; sin límites de consulta (solo se piden rangos de fechas). | Reautenticar ante 401; consultar con moderación y backoff; rangos de fechas acotados. |
 | H8 | El banco podría exigir IP fija para llamar su API; las Edge Functions de Supabase no tienen IP fija. | Preguntar; si es necesario, un proxy con IP fija. |
 | H9 | `senderBankCode` es código ASFI; el catálogo de códigos no viene en el PDF. | Pedir el catálogo al banco para mostrar el nombre del banco. |
-| H10 | Usuario y llave AES existen en el portal; falta cargar la contraseña. | Cargar como secretos (ver "Dónde va la llave AES"). |
+| H10 | El banco entregó usuario y llave AES, pero **ninguna contraseña**; el `authenticate` la exige (cifrada). | Preguntar al banco qué valor va en `password`; probar en certificación (no adivinar contra producción). |

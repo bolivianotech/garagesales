@@ -49,3 +49,9 @@ npm run dev
 cd apps/pwa && npm test            # reglas de la interfaz
 bash supabase/tests/run.sh         # RLS y auditoría (requiere binarios de PostgreSQL)
 ```
+
+## Alternativa sin la app: crear usuarios desde el panel (recomendada al inicio)
+**Authentication → Users → Add user → Create new user**: ingresa correo y una contraseña fuerte propia y marca **Auto Confirm User**. Así no dependes del envío de correos de confirmación (el correo por defecto de Supabase tiene un límite muy bajo). El perfil se crea solo por el trigger. Luego ejecuta `bootstrap_staff_role` (sección 3).
+
+## Google (opcional, se puede dejar para después)
+El botón "Continuar con Google" está oculto (`VITE_ENABLE_GOOGLE=false`). Para activarlo hace falta crear credenciales OAuth en Google Cloud y pegarlas en Supabase → Authentication → Providers → Google. Sin eso, el registro con correo y contraseña funciona igual.
