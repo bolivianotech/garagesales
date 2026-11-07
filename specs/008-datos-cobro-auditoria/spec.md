@@ -1,6 +1,6 @@
 # Spec 008 — Datos de cobro del vendedor y auditoría inmutable
 
-**Estado:** Draft · Pendiente: Q19, Q20
+**Estado:** Draft · Q19 y Q20 resueltas (listo para aprobar)
 
 ## Objetivo
 Registrar el QR/cuenta con la que se paga a cada vendedor, sin pedirle que lo actualice salvo que quede inutilizado, con control de quién puede modificarlo y un registro que no se pueda alterar.
@@ -24,7 +24,9 @@ El QR de cobro del vendedor es un QR de **cualquier banco o entidad financiera d
 - FR-096: Job diario que recalcula la cadena de hashes y alerta si encuentra una ruptura.
 - FR-097: Cada liquidación (`payout`) guarda el id de la **versión exacta** del método de cobro usada.
 - FR-098: El `ledger` y `payouts` también son inmutables; las correcciones se hacen con asientos de reversa.
-- FR-099: Roles (propuesta): `admin` aprueba vendedores y ve reportes; `finance_admin` aprueba métodos de cobro y registra liquidaciones.
+- FR-099: Roles: `admin` aprueba vendedores y ve reportes; `finance_admin` aprueba métodos de cobro y registra liquidaciones. Inicialmente el dueño usa dos cuentas de correo distintas, una por rol; la regla de cuatro ojos se aplica por cuenta y es configurable para cuando haya otra persona.
+- FR-099a: 2FA obligatorio para las cuentas `admin` y `finance_admin`; el `audit_log` registra la cuenta que actúa.
+- FR-090a: La foto del QR se guarda en almacenamiento privado (solo vendedor, `finance_admin`).
 - NFR-012: Números de cuenta cifrados en reposo y enmascarados en pantalla (`****1234`), visibles completos solo al `finance_admin`.
 
 ## Criterios de aceptación

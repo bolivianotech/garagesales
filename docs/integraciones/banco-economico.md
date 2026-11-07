@@ -33,17 +33,28 @@ Fuente: "API Market · Especificaciones Técnicas v1.3.0" (28/04/2025). El PDF o
 6. **QR de cobro de vendedores (para pagarles):** es un QR de cualquier banco boliviano, de vigencia larga y multipago; se registra y versiona según spec 008. No se genera con esta API.
 7. **Pago a vendedores:** manual (decisión del dueño). La planilla de pagos (§9) queda como mejora futura para automatizar.
 
+## Portal de usuarios del banco (captura de pantalla recibida)
+El portal muestra por usuario API: **Usuario**, nombre o razón social, **Tipo de uso = APIMARKET**, **Llave AES** (con botón de regenerar), **URL del servicio de notificación**, **tipo de autorización** del servicio de notificación (hoy "Sin autorización") y **token de autorización**. Implicaciones:
+- El aviso de pago (`notifyPaymentQR`) sí admite autenticación: se registrará la URL de la Edge Function `notify-payment` con un tipo de autorización y un token (valor en `BANCO_ECONOMICO_NOTIFY_TOKEN`). Aun así el aviso se verifica con `statusQR`.
+- **No pulsar "regenerar" la llave AES** sin planificarlo: invalida lo cifrado con la anterior y exige actualizar el secreto.
+- La llave de certificación y la de producción son distintas.
+
+## Dónde va la llave AES (y demás secretos)
+Nunca en el chat, en el repo ni en el frontend. Dos lugares válidos:
+1. **Desarrollo local:** archivo `.env` en la raíz del proyecto en tu máquina (`d:\ia\garagesales\.env`), que ya está en `.gitignore`. Se crea copiando `.env.example` y rellenando `BANCO_ECONOMICO_AES_KEY`, `BANCO_ECONOMICO_USERNAME` y `BANCO_ECONOMICO_PASSWORD`.
+2. **Servidor (certificación/producción):** secretos de Supabase Edge Functions, con `supabase secrets set BANCO_ECONOMICO_AES_KEY=...` o desde el panel de Supabase (Edge Functions → Secrets).
+
 ## Hallazgos y puntos a verificar con el banco
 
 | # | Hallazgo | Acción |
 |---|---|---|
 | H1 | La URL que indicaste (`accounts/queryMovements`) **no aparece** en el v1.3.0; el PDF documenta `POST /api/accounts/history`. | Confirmar con el banco cuál es la correcta; mientras tanto se usa `history`. |
-| H2 | El algoritmo AES no especifica modo, IV, relleno ni formato de la llave (¿hex de 32 caracteres = 16 bytes o texto de 32 bytes?). El ejemplo cifra "1234" a 32 bytes en base64. | Cifrar localmente y validar contra `/authentication/encrypt` en **certificación**. Nunca enviar la llave de producción a ese endpoint: viaja en la URL (`aesKey=` en query). |
+| H2 | El banco solo indica AES con llave de 256 bits (32 bytes); no da modo, IV ni relleno. El ejemplo cifra "1234" a 32 bytes en base64. | Probar variantes (CBC/ECB, IV prefijado o fijo, PKCS7) hasta que el resultado local coincida con `/authentication/encrypt` en **certificación**, y fijar un test con ese vector. Nunca enviar la llave de producción a ese endpoint: viaja en la URL (`aesKey=` en query). |
 | H3 | `transactionId` es id del comercio en `generateQR`, pero PaymentQR lo describe como número de transacción del banco. | Usar `qrId` como clave; verificar en certificación qué devuelve `transactionId`. |
 | H4 | `dueDate` sin hora. | Ya cubierto con `cancelQR` + control propio. |
-| H5 | Longitud máxima de `description` no documentada. | Probar en certificación; por defecto ≤ 100 caracteres con código de pedido primero. |
-| H6 | Sin firma ni autenticación documentada para `notifyPaymentQR`. | Ruta con token secreto, verificación obligatoria con `statusQR`; preguntar si hay lista de IP. |
-| H7 | Expiración del token y límites de consulta no documentados. | Reautenticar ante 401; consultar con backoff; preguntar límites. |
+| H5 | Longitud máxima de `description`: **100 caracteres** (confirmado por el dueño). | Código de pedido primero y SKUs truncados con "…". |
+| H6 | Sin firma documentada para `notifyPaymentQR`, pero el portal permite configurar tipo de autorización y token. | Configurar autorización + token, y aun así verificar con `statusQR`. |
+| H7 | Expiración del token no documentada; sin límites de consulta (solo se piden rangos de fechas). | Reautenticar ante 401; consultar con moderación y backoff; rangos de fechas acotados. |
 | H8 | El banco podría exigir IP fija para llamar su API; las Edge Functions de Supabase no tienen IP fija. | Preguntar; si es necesario, un proxy con IP fija. |
 | H9 | `senderBankCode` es código ASFI; el catálogo de códigos no viene en el PDF. | Pedir el catálogo al banco para mostrar el nombre del banco. |
-| H10 | Credenciales y llave de certificación aún no se han cargado. | Cargar como secretos de Supabase (nunca en el chat ni en el repo). |
+| H10 | Usuario y llave AES existen en el portal; falta cargar la contraseña. | Cargar como secretos (ver "Dónde va la llave AES"). |
