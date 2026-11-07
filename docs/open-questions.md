@@ -20,16 +20,20 @@
 | Q22 | El banco solo indica AES con llave de 256 bits (32 bytes). Modo/IV/relleno se determinan por pruebas en certificación (ver integración H2). |
 | Q24 | `description` máx. **100 caracteres**. |
 | Q25 | Sin límites de consulta documentados; los movimientos se piden por rango `startDate`–`endDate`, y `paidQR` por día. Se consulta con moderación y backoff. |
-| Q26 | `senderBankCode` usa código ASFI; el catálogo no viene en el PDF (ver abierta Q26). |
+| Q26 | `senderBankCode` usa código ASFI; catálogo editable en `bank_catalog` (ver abajo). |
 
 ## Abiertas
 | # | Pregunta | Bloquea |
 |---|---|---|
-| Q23 | ¿El banco exige IP fija para llamar su API? (las Edge Functions de Supabase no la tienen). Se resuelve probando desde certificación; si falla, proxy con IP fija. | Fase 4 |
-| Q26 | Catálogo de códigos ASFI para mostrar el nombre del banco pagador. Mientras tanto se muestra el código. Opción: construir el catálogo a partir de la lista pública de ASFI. | Spec 004 (solo visual) |
-| Q27 | **Contraseña** del usuario API de certificación (el usuario y la llave AES ya existen en el portal del banco) y proceso/URL de producción. | Fase 4 |
-| Q28 | **Notificación de pago:** el portal del banco permite registrar la *URL del servicio de notificación* y un *token de autorización*. Se configura cuando exista la URL pública de la Edge Function (requiere proyecto Supabase). | Fase 4 |
-| Q15 | Dominio temporal gratuito (propuesta: Cloudflare Pages `*.pages.dev`). | Fase 1 |
-| Q16 | Titular y facturación de la cuenta de Supabase. | Fase 1 |
+| Q27 | **Contraseña** del usuario API de certificación (usuario y llave AES ya existen) y URL de producción. Se cargan como secretos, no por el chat. | Fase 4 |
+| Q28 | **Notificación de pago:** registrar en el portal del banco la URL de la función de aviso y su token, cuando exista el despliegue en Supabase. | Fase 4 |
+| Q29 | **Correos de personal:** el de `admin` y el de `finance_admin` (se registran en la app y luego se asignan con `bootstrap_staff_role`). | T10 |
+| Q30 | **Aplicar la migración** en Supabase y habilitar Google/confirmación de correo (ver `docs/setup-supabase.md`). | T9, T11 |
+| Q15 | Dominio temporal gratuito (propuesta: Cloudflare Pages `*.pages.dev`). ¿Tienes cuenta de Cloudflare? | T13 |
+
+## Resueltas en esta ronda
+- **Q16:** proyecto Supabase `garajesales` creado (ref `pfhgqoeobboriounehat`).
+- **Q23:** el banco **no exige IP fija**; las Edge Functions funcionan sin proxy.
+- **Q26 (catálogo de bancos):** no se pudo obtener de fuentes públicas ni del PDF; el listado de ASFI que aparece en la web usa otro tipo de código (códigos de envío de información, 5 dígitos), así que **no se usa**. Decisión: tabla `bank_catalog` editable; se muestra "Banco <código>" mientras no esté cargado y se completa con los códigos que aparezcan en pagos reales o con el listado que entregue el banco.
 
 > La llave AES y la contraseña nunca van en el chat ni en el repo: se cargan como secretos de Supabase (ver `docs/integraciones/banco-economico.md`, sección "Dónde va la llave AES").

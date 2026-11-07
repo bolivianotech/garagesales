@@ -1,6 +1,6 @@
 # Spec 002 — Catálogo del vendedor
 
-**Estado:** Draft
+**Estado:** Approved (2026-11-07)
 
 ## Objetivo
 Que el dueño de productos publique y gestione lo que ofrece: foto, precio y cantidad.

@@ -1,6 +1,6 @@
 # Spec 001 — Autenticación, roles y RBAC
 
-**Estado:** Draft
+**Estado:** Approved (2026-11-07)
 
 ## Objetivo
 Registro/ingreso y control de acceso estricto: comprador, vendedor (aprobado por el admin) y admin.

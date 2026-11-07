@@ -1,6 +1,6 @@
 # Spec 007 — Retiro en persona y reporte "Por entregar"
 
-**Estado:** Draft
+**Estado:** Approved (2026-11-07)
 
 ## Objetivo
 Evitar el dolor de "señalar lo comprado": al confirmarse un pago, el sistema sabe qué prenda es de quién y genera el reporte para entregarla cuando el comprador pase a recoger.

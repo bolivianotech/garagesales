@@ -1,0 +1,4 @@
+-- Ejecutar UNA vez en el SQL Editor de Supabase, después de que ambos correos se hayan registrado en la app.
+-- Reemplaza los correos y guarda este archivo SIN los correos reales si es público.
+select public.bootstrap_staff_role('CORREO_ADMIN@ejemplo.com', 'admin');
+select public.bootstrap_staff_role('CORREO_FINANZAS@ejemplo.com', 'finance_admin');

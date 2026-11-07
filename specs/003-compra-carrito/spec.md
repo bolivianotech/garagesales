@@ -1,6 +1,6 @@
 # Spec 003 — Catálogo público, carrito y pedido
 
-**Estado:** Draft · Entrega decidida: **solo retiro en persona** (sin envíos)
+**Estado:** Approved (2026-11-07)
 
 ## Objetivo
 Que el comprador explore, arme un carrito y genere un pedido sin sobreventa.

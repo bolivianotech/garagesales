@@ -1,6 +1,6 @@
 # Spec 008 — Datos de cobro del vendedor y auditoría inmutable
 
-**Estado:** Draft · Q19 y Q20 resueltas (listo para aprobar)
+**Estado:** Approved (2026-11-07)
 
 ## Objetivo
 Registrar el QR/cuenta con la que se paga a cada vendedor, sin pedirle que lo actualice salvo que quede inutilizado, con control de quién puede modificarlo y un registro que no se pueda alterar.
