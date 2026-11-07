@@ -11,7 +11,8 @@ Registro/ingreso y control de acceso estricto: comprador, vendedor (aprobado por
 | `visitor` | Ver catálogo público |
 | `buyer` | Comprar, ver sus pedidos y códigos de retiro |
 | `seller` (aprobado) | Gestionar **solo su** catálogo, sus pedidos por entregar y su estado de cuenta |
-| `admin` | Aprobar/suspender vendedores, ver todo, reportes y liquidaciones |
+| `admin` | Aprobar/suspender vendedores, ver reportes |
+| `finance_admin` | Aprobar métodos de cobro de vendedores y registrar liquidaciones (spec 008; confirmar en Q19) |
 
 ## Historias
 - Como **persona** quiero registrarme con email o Google.

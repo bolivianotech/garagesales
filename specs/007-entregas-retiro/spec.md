@@ -13,7 +13,7 @@ Evitar el dolor de "señalar lo comprado": al confirmarse un pago, el sistema sa
 
 ## Requisitos
 - FR-070: Al pasar un pedido a `paid` se crean registros `pickups` por tienda y comprador con estado `ready`.
-- FR-071: El reporte "Por entregar" agrupa por comprador: nombre, teléfono, ítems (foto, título, cantidad) y vendedor dueño de cada ítem.
+- FR-071: El reporte "Por entregar" agrupa por comprador: nombre, teléfono, **nombre y banco del pagador** (según el banco), ítems (foto, **SKU**, título corto, cantidad) y vendedor dueño de cada ítem. Si el pagador difiere del comprador registrado, se muestran ambos y el retiro exige el código.
 - FR-072: El vendedor solo ve los ítems que le pertenecen; el admin ve todos (RBAC).
 - FR-073: El comprador ve un código de retiro (alfanumérico + QR) por pedido.
 - FR-074: El vendedor confirma la entrega ingresando/escaneando el código; el ítem pasa a `delivered` con fecha y quién entregó.

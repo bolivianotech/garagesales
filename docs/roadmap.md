@@ -32,14 +32,15 @@ Orden de valor: **1 → 2 → 3 → 4 (con `MockProvider`) → 7 → desplegar c
 **Salida:** no es posible sobrevender en prueba de concurrencia.
 
 ## Fase 4 — Pago QR Banco Económico (spec 004)
-1. Edge Function `create-qr` (autentica con banco, genera QR por pedido).
-2. Edge Function `bank-webhook` / `check-payment` (confirmación + idempotencia).
+1. Adaptador del banco: autenticación, cifrado AES local (validado en certificación) y `create-qr` (`generateQR`, uso único, monto fijo, glosa con SKU).
+2. `check-payment` (`statusQR`), `notify-payment` (aviso opcional con token), `cancel-qr` al expirar, y `reconcile-daily` (`paidQR` + `accounts/history`); todo idempotente por `qrId`.
 3. Pantalla de pago: QR, cuenta regresiva, estado en vivo.
-4. Libro mayor (`ledger`) y liquidación a vendedores (según decisión pendiente).
+4. Libro mayor (`ledger`) inmutable con comisión del 1 % (ver Fase 4b y spec 008).
 5. Pruebas en sandbox del banco; luego piloto con montos reales mínimos.
 **Salida:** pago real de prueba confirma el pedido, descuenta stock y notifica al vendedor.
 
 ## Fase 4b — Retiro y liquidación (specs 007 y 006)
+0. Auditoría inmutable (`audit_log` encadenado) y datos de cobro versionados del vendedor con rol `finance_admin` (spec 008).
 1. Reporte "Por entregar" por comprador/vendedor y código de retiro.
 2. Ledger con comisión 1 %, reporte "Saldos por pagar", liquidaciones y validación de cuadre contra el banco.
 **Salida:** el admin ve cuánto pagar a cada vendedor, neto de comisión, y cada vendedor ve solo lo suyo.

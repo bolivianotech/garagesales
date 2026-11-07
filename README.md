@@ -11,6 +11,7 @@ Marketplace de garage sales: los **vendedores** publican productos (foto, precio
 | [`docs/constitution.md`](docs/constitution.md) | Principios y reglas no negociables del proyecto |
 | [`docs/roadmap.md`](docs/roadmap.md) | **Paso a paso** de implementación (fases, entregables, criterios de salida) |
 | [`docs/architecture.md`](docs/architecture.md) | Arquitectura, modelo de datos, seguridad |
+| [`docs/integraciones/banco-economico.md`](docs/integraciones/banco-economico.md) | Contrato de la API del banco y puntos a verificar |
 | [`docs/adr/`](docs/adr) | Decisiones de arquitectura (ADR) |
 | [`docs/open-questions.md`](docs/open-questions.md) | Preguntas abiertas que bloquean specs |
 | [`specs/`](specs) | Una carpeta por feature: `spec.md` → `plan.md` → `tasks.md` |

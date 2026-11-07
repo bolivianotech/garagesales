@@ -10,7 +10,7 @@ Que el dueño de la plataforma vea, automáticamente y por vendedor, **cuánto d
 - Comisión: **1 % del precio de cada ítem vendido**, parametrizable (`commission_bps = 100`).
 - **Redondeo a favor de la plataforma:** `fee_cents = ceil(gross_cents × commission_bps / 10000)` por ítem (la comisión siempre sube al centavo siguiente si hay fracción) y `net_cents = gross_cents − fee_cents` (el vendedor recibe el redondeo hacia abajo). Todo en centavos enteros, sin flotantes.
 - Pago manual: el admin transfiere al QR/cuenta que el vendedor registró.
-- El vendedor registra su banco, cuenta y su QR de cobro; el QR debe tener vigencia amplia (2 años) para no tener que renovarlo (interpretación a confirmar, Q17).
+- El QR/cuenta de cobro del vendedor se gestiona según spec 008 (versionado, inmutable, aprobado por `finance_admin`); es un QR de cualquier banco boliviano con vigencia larga y multipago.
 - Solo cuentan ítems de pedidos `paid` y todavía no liquidados.
 
 ## Historias
@@ -24,7 +24,8 @@ Que el dueño de la plataforma vea, automáticamente y por vendedor, **cuánto d
 - FR-062: El admin crea una liquidación (`payout`) que agrupa líneas pendientes de un vendedor; las líneas pasan a `settled`. Una línea no puede liquidarse dos veces.
 - FR-063: Validación automática de cuadre: Σ `gross` de pedidos pagados = Σ `fee` + Σ `net`; y Σ bruto conciliado = movimientos bancarios acreditados. Diferencias se alertan al admin.
 - FR-064: El vendedor ve su propio estado de cuenta; RLS impide ver el de otros.
-- FR-065: Cada vendedor registra sus datos de cobro (banco, cuenta, titular); el admin los usa para pagar.
+- FR-065: Cada liquidación referencia la versión exacta del método de cobro del vendedor (spec 008) y no se puede registrar si el método está vencido, inutilizado o en enfriamiento.
+- FR-066: `ledger` y `payouts` son inmutables; las correcciones se hacen con asientos de reversa.
 - NFR-010: Montos exactos (sin flotantes); pruebas de propiedad para redondeo.
 
 ## Criterios de aceptación
