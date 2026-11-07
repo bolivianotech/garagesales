@@ -1,8 +1,8 @@
-# ADR-0002: Confirmar pagos por conciliación de movimientos bancarios
+# ADR-0002: Confirmar pagos por estado del QR, con conciliación de movimientos
 
-- **Estado:** Propuesta (pendiente de validar con los PDFs del banco) · 2026-11-07
-- **Contexto:** El endpoint disponible es `accounts/queryMovements` (consulta de movimientos de cuenta). El QR es de la cuenta del dueño de la plataforma, que cobra y luego liquida a vendedores con 1 % de comisión.
-- **Decisión:** Un job del servidor consulta los movimientos, los guarda de forma idempotente y concilia créditos con pedidos pendientes. Si el banco ofrece webhook, se añade como acelerador, no como único mecanismo.
-- **Consecuencias (+):** la verdad es la cuenta bancaria; auditable y reconciliable con el ledger.
-- **Consecuencias (−):** latencia de polling; atribución depende de referencia/glosa o de montos únicos (riesgo Q10).
-- **Seguridad:** credenciales solo en secretos de Edge Functions; URL por variable de entorno (el host actual es de **desarrollo**).
+- **Estado:** Propuesta (validar con el PDF "Api Market Baneco v1.3.0") · 2026-11-07
+- **Contexto:** El banco permite generar QR dinámicos (§7.2) y consultar su estado (`statusQRCode = 1` = pagado). También existe `accounts/queryMovements`. El QR es de la cuenta del dueño de la plataforma, que luego liquida a vendedores con 1 % de comisión.
+- **Decisión:** Un QR por pedido; el identificador del QR vincula pago y pedido. Un job consulta `statusQRCode` de los QR pendientes y confirma. `queryMovements` se usa como conciliación diaria de respaldo, no para atribuir pagos.
+- **Consecuencias (+):** vínculo exacto pago↔pedido sin montos únicos; auditable contra el banco.
+- **Consecuencias (−):** latencia de polling si no hay callback; depende de límites de tasa del banco.
+- **Seguridad:** credenciales solo en secretos de Edge Functions; URLs por variable de entorno (el host actual es de **desarrollo**).

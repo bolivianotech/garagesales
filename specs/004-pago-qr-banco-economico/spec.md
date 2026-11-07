@@ -1,42 +1,46 @@
-# Spec 004 — Cobro con QR y confirmación bancaria (Banco Económico)
+# Spec 004 — Cobro con QR dinámico y confirmación bancaria (Banco Económico)
 
-**Estado:** Draft · **Bloqueada por:** Q1, Q9, Q10, Q11 (PDFs del banco)
+**Estado:** Draft · **Bloqueada por:** lectura del PDF "Api Market Baneco v1.3.0" (§7.2 generación de QR y consulta de estado `statusQRCode`), que aún no está en el repo. Los nombres de endpoints/campos de esta spec son provisionales hasta verificarlos.
 
 ## Objetivo
-Cobrar cada pedido a la cuenta de la plataforma con un QR y confirmar el pago automáticamente verificándolo contra los movimientos reales de la cuenta.
+Generar un QR dinámico por pedido con el monto exacto (Σ precio × cantidad) y confirmar el pago automáticamente consultando el estado del QR en el banco.
 
 ## Contexto de integración
-- Endpoint de consulta de movimientos (ambiente de **desarrollo**): `https://apimktdesa.baneco.com.bo/ApiGateway/api/accounts/queryMovements`. La URL base va en `BANCO_ECONOMICO_BASE_URL`; producción usará otra.
-- Este endpoint permite **conciliar** pagos consultando los movimientos. Si el banco no ofrece webhook (Q11), la confirmación se hace por **polling** desde un job del servidor.
+- QR dinámico: se genera por pedido según §7.2 del PDF, con el monto total calculado en servidor.
+- Estado de pago: el banco expone `statusQRCode`; el valor `1` indica **QR pagado**.
+- Respaldo: `accounts/queryMovements` (desarrollo: `https://apimktdesa.baneco.com.bo/ApiGateway/api/accounts/queryMovements`) para conciliación diaria contra la cuenta.
+- Todas las URLs van en variables de entorno; el host actual es de **desarrollo**.
+- Vínculo pago↔pedido: cada pedido tiene **su propio QR**; el identificador del QR devuelto por el banco se guarda en `payments.bank_qr_id`. Así `statusQRCode = 1` de ese QR identifica el pedido sin depender de glosa ni de montos únicos.
 
 ## Historias
-- Como **comprador** quiero ver un QR con el monto exacto y pagarlo desde la app de mi banco.
-- Como **comprador** quiero que la pantalla me confirme sola cuando el pago se acredite.
-- Como **dueño de la plataforma** quiero que los pagos se verifiquen contra el banco sin intervención manual.
-- Como **vendedor** quiero que, al confirmarse el pago, mi producto deje de estar disponible.
+- Como **comprador** quiero un QR con el total exacto de mi carrito y pagarlo desde mi banco.
+- Como **comprador** quiero que la pantalla confirme sola mi pago.
+- Como **dueño** quiero que los pagos se verifiquen contra el banco sin intervención manual.
+- Como **vendedor** quiero que, al confirmarse el pago, el producto deje de estar disponible.
 
 ## Requisitos
-- FR-030: Al iniciar el pago se muestra un QR por pedido con el monto exacto y vencimiento igual a `orders.expires_at`.
-- FR-031: Credenciales del banco solo en Edge Functions; el frontend nunca las ve.
-- FR-032: Un job de servidor consulta `queryMovements` a intervalo corto mientras existan pedidos pendientes y concilia créditos nuevos con pedidos pendientes (criterio de vínculo según Q10). Si hay webhook, se usa además de la consulta.
-- FR-033: Solo el servidor marca `orders.status = paid`, tras validar monto exacto y referencia del movimiento.
-- FR-034: Cada movimiento bancario se procesa una sola vez (idempotencia por id/referencia del movimiento).
-- FR-035: Movimientos que no calzan con ningún pedido, con monto distinto, o llegados tras expirar el pedido se guardan en `bank_movements` con estado `unmatched`/`review` para revisión manual del admin.
-- FR-036: Se guarda el movimiento crudo del banco (`bank_movements.raw`) para auditoría.
-- FR-037: Al pasar a `paid`, los productos del pedido quedan **vendidos de forma definitiva**: salen del catálogo y del inventario activo del vendedor y pasan a "Por entregar" (spec 007).
-- FR-038: El comprador ve el estado en vivo (Realtime): esperando → pagado / expirado.
-- FR-039: `MockProvider` para desarrollo y pruebas automáticas, sin tocar el banco.
+- FR-030: Al pagar, el servidor calcula el total (Σ `unit_price_cents × qty`) y solicita al banco un QR dinámico por ese monto, guardando `bank_qr_id`, el payload/imagen y su vencimiento.
+- FR-031: Credenciales y llamadas al banco solo desde Edge Functions; el frontend nunca las ve.
+- FR-032: Un job consulta `statusQRCode` de los QR de pedidos pendientes (intervalo corto); si el estado es `1` (pagado) confirma el pedido. Si el banco ofrece callback, se usa además.
+- FR-033: Solo el servidor marca `orders.status = paid`, validando estado `1`, que el `bank_qr_id` corresponda al pedido y, si el banco lo devuelve, que el monto coincida con el total.
+- FR-034: Confirmación idempotente por `bank_qr_id`: un QR confirma un pedido una sola vez.
+- FR-035: Conciliación diaria: `queryMovements` se compara con `payments` pagados; créditos sin pedido o pedidos pagados sin crédito generan alerta al admin (`bank_movements`, estado `unmatched`/`review`).
+- FR-036: Se guarda la respuesta cruda del banco (`payments.raw_response`) para auditoría.
+- FR-037: Al pasar a `paid`, el producto es **vendido definitivamente**: sale del catálogo y del inventario del vendedor y pasa a "Por entregar" (spec 007).
+- FR-038: El comprador ve el estado en vivo (Realtime).
+- FR-039: `MockProvider` para desarrollo y pruebas, sin tocar el banco.
 - FR-039a: El pago confirmado genera asientos en `ledger` (spec 006).
-- NFR-005: Pago visible al comprador en < 30 s desde que se acredita en el banco (polling cada ≤ 10 s mientras haya pedidos pendientes; ajustar según límite Q11).
+- FR-039b: **Pago tardío:** si un QR se paga cuando el pedido ya expiró (stock liberado), el sistema intenta re-reservar los ítems; si no es posible, el pago queda en `review` para reembolso/decisión manual del admin. Nunca se pierde un pago.
+- NFR-005: Pago visible al comprador en < 30 s desde que el banco lo marca pagado (ajustar a límites de tasa del PDF).
 - NFR-006: Rotación de secretos sin cambiar código.
-- NFR-009: Si el banco no responde, se reintenta con backoff y no se pierden movimientos (se consulta por rango de fechas desde la última marca de agua).
+- NFR-009: Si el banco no responde, reintentos con backoff sin perder pagos.
 
 ## Criterios de aceptación
-- **Dado** un pedido pendiente, **cuando** aparece en el banco el crédito conciliable, **entonces** el pedido pasa a `paid`, el comprador lo ve y el producto desaparece de la vista del vendedor y del catálogo.
-- **Dado** el mismo movimiento consultado dos veces, **cuando** se procesa, **entonces** el pedido se confirma una sola vez.
-- **Dado** un crédito con monto menor al total, **cuando** se concilia, **entonces** el pedido NO se marca pagado y queda en revisión.
-- **Dado** un crédito sin pedido asociado, **cuando** se detecta, **entonces** queda en `unmatched` y aparece en el reporte del admin.
-- **Dado** que el banco no responde, **cuando** vuelve, **entonces** se recuperan los movimientos del intervalo perdido.
+- **Dado** un carrito de 2 × 50 BS y 1 × 30 BS, **cuando** el comprador paga, **entonces** se genera un QR por 130,00 BS.
+- **Dado** un QR con `statusQRCode = 1`, **cuando** el job lo consulta, **entonces** el pedido pasa a `paid` y el producto desaparece del catálogo y del inventario del vendedor.
+- **Dado** el mismo QR consultado varias veces en estado `1`, **entonces** el pedido se confirma una sola vez.
+- **Dado** un QR pagado tras expirar el pedido y sin stock, **entonces** el pago queda en `review` y el admin recibe alerta.
+- **Dado** que el banco no responde, **cuando** vuelve, **entonces** los pedidos pendientes se verifican sin pérdida.
 
 ## Riesgos
-- Si `queryMovements` no trae glosa/referencia utilizable (Q10), habrá que usar **montos únicos** por pedido (centavos distintivos) para evitar atribuir mal un pago. Se decide al leer los PDFs.
+- **Vigencia del QR vs reserva de stock:** si el QR de un pedido tiene vigencia larga, un comprador podría pagar mucho después de que el stock se liberó (ver FR-039b). Recomendación: QR del pedido con vigencia corta, y reservar la vigencia de 2 años solo para los QR de cobro de vendedores (spec 006). Pendiente de confirmar (Q17).

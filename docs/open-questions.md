@@ -10,7 +10,22 @@
 | Q6 | Sin facturación por ahora (se reevaluará). |
 | Q7 | Dominio: tentativo `garagesales.bo` (aún no comprado). Primero despliegue y pruebas con dominio gratuito temporal. |
 
+## Resueltas (2ª ronda)
+| # | Decisión |
+|---|---|
+| Q9 | QR dinámico por pedido, generado con el total (Σ precio × cantidad), según PDF §7.2. |
+| Q10/Q11 | Estado de pago por `statusQRCode = 1`; `queryMovements` solo como conciliación de respaldo. |
+| Q12 | Comisión redondeada **hacia arriba** a favor de la plataforma; neto del vendedor hacia abajo. |
+| Q13 | Liquidación manual al QR/cuenta que registra el vendedor. |
+| Q14 | Ítem pagado desaparece del catálogo/inventario y queda en "Por entregar"; reportes de entregados/no entregados y de tiempos de retiro por cliente. |
+
 ## Abiertas
+| # | Pregunta | Bloquea | Estado |
+|---|---|---|---|
+| Q17 | **Vigencia de 2 años:** ¿aplica al QR de cobro que registra el vendedor, o al QR de cada pedido? Si fuera al del pedido, un pago tardío (meses después) puede chocar con stock ya liberado (ver spec 004 FR-039b). Recomiendo: QR de pedido de vigencia corta; QR del vendedor de 2 años. | Spec 004/006 | Pendiente |
+| Q18 | El PDF "Api Market Baneco v1.3.0" aún no está en el repo; hay que compartirlo para verificar §7.2, `statusQRCode`, autenticación, límites de consulta y si hay callback. | Spec 004 | Pendiente |
+
+## Abiertas anteriores (superadas arriba salvo las que siguen)
 | # | Pregunta | Bloquea | Estado |
 |---|---|---|---|
 | Q1 | **PDFs del Banco Económico.** Los PDFs están en `docs/` de la máquina local, pero **no están en el repo** (el `.gitignore` bloquea `*.pdf`). Hay que compartirlos en el chat o commitearlos de forma privada para que yo pueda leerlos. | Spec 004 | Pendiente |

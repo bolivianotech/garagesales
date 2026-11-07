@@ -21,6 +21,11 @@ Evitar el dolor de "señalar lo comprado": al confirmarse un pago, el sistema sa
 - FR-076: Reporte imprimible/PDF y exportable a CSV por fecha de retiro.
 - FR-077: Ubicación y horario de retiro por vendedor, visibles al comprador tras pagar.
 - FR-078: Notificación al comprador cuando su pago se confirma.
+- FR-079: Reporte de **no entregados** (pagados y sin retirar) con antigüedad en días, filtrable por vendedor y comprador.
+- FR-080: Reporte de **entregados** por rango de fechas, con vendedor, comprador y tiempo de retiro.
+- FR-081: Reporte de **comportamiento de clientes**: por comprador, número de compras, tiempo promedio y mediano entre `paid_at` y `delivered_at`, y cantidad de pedidos pendientes de retiro. Ordenable para identificar a quienes demoran más.
+- FR-082: Recordatorios automáticos al comprador cuando un ítem pagado lleva N días sin retirarse (N configurable).
+- NFR-011: Los reportes de clientes son visibles solo para el admin; el vendedor ve únicamente los de sus propios ítems.
 
 ## Criterios de aceptación
 - **Dado** un pedido pagado con ítems de dos vendedores, **cuando** cada vendedor abre "Por entregar", **entonces** ve solo sus ítems con el nombre del comprador.
