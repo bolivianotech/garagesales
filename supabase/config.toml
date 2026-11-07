@@ -1,0 +1,11 @@
+# Configuración mínima para la CLI de Supabase (supabase link --project-ref pfhgqoeobboriounehat)
+project_id = "garajesales"
+
+[auth]
+site_url = "http://localhost:5173"
+enable_signup = true
+minimum_password_length = 8
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
