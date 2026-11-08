@@ -17,7 +17,7 @@ Spec: [`spec.md`](spec.md) (Approved 2026-11-07)
 - Pantalla del admin para ocultar productos (la función ya existe).
 
 ## Pruebas
-- `supabase/tests/002_products.sql` (30 verificaciones de RLS, reglas de estado, fotos y Storage).
+- `supabase/tests/002_products.sql` (31 verificaciones de RLS, reglas de estado, fotos y Storage).
 - `apps/pwa/src/lib/catalog.test.ts` (dinero, fotos y validaciones).
 
 ## Riesgos

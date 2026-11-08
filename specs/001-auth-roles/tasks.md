@@ -10,7 +10,7 @@
 | T6 | PWA: login/registro, cuenta, solicitud de vendedor | FR-001, FR-002, FR-003 | ✅ hecha |
 | T7 | PWA: panel admin de revisión de vendedores | FR-005 | ✅ hecha |
 | T8 | CI: typecheck, tests y pruebas SQL | — | ✅ definida |
-| T9 | Aplicar la migración al proyecto Supabase `pfhgqoeobboriounehat` | — | ⏳ requiere acción del dueño |
+| T9 | Aplicar la migración al proyecto Supabase `pfhgqoeobboriounehat` | — | ✅ aplicada por el dueño |
 | T10 | Crear los dos usuarios de personal y asignar roles | FR-099 | ⏳ requiere correos |
 | T11 | Habilitar Google y confirmación de correo en Supabase | FR-001 | ⏳ requiere acción del dueño |
 | T12 | Enrolar TOTP en ambas cuentas y activar `require_admin_mfa` | FR-099a | ⏳ después de T10 |

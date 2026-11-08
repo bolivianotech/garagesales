@@ -12,3 +12,4 @@ Reglas que toda spec, plan y PR deben respetar.
 8. **Idioma:** documentación y UI en español (Bolivia); código e identificadores en inglés. Moneda: Bolivianos (BS), enteros en centavos.
 9. **Cambios pequeños.** PRs enfocados a una tarea de `tasks.md`; CI verde antes de fusionar.
 10. **Decisiones documentadas** en ADR cuando afecten arquitectura, seguridad o costos.
+11. **Pruebas documentadas.** Toda fase se cierra con casos de prueba con ID, resultados registrados y trazabilidad a requisitos (`docs/testing/`). Lo que no tiene resultado registrado no se da por terminado.
