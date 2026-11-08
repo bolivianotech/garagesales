@@ -4,26 +4,11 @@ import { RequireRole } from './auth/RequireRole'
 import { Login } from './pages/Login'
 import { Account } from './pages/Account'
 import { Admin } from './pages/Admin'
+import { Catalog } from './pages/Catalog'
+import { SellerDashboard } from './pages/SellerDashboard'
+import { ProductForm } from './pages/ProductForm'
+import { QuickUpload } from './pages/QuickUpload'
 import { isConfigured } from './lib/supabase'
-
-function Home() {
-  return (
-    <section className="card">
-      <h1>GarageSales</h1>
-      <p>Compra y vende de todo, con pago por QR y retiro en persona.</p>
-      <p className="muted">El catálogo llegará en la siguiente fase.</p>
-    </section>
-  )
-}
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <section className="card">
-      <h1>{title}</h1>
-      <p className="muted">Disponible en una fase próxima.</p>
-    </section>
-  )
-}
 
 export function App() {
   const { session } = useAuth()
@@ -42,7 +27,7 @@ export function App() {
           <p className="error">Falta configurar VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY (ver .env.example).</p>
         )}
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Catalog />} />
           <Route path="/ingresar" element={<Login />} />
           <Route
             path="/cuenta"
@@ -56,7 +41,23 @@ export function App() {
             path="/vender"
             element={
               <RequireRole area="sell">
-                <Placeholder title="Panel de vendedor" />
+                <SellerDashboard />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/vender/producto/:id?"
+            element={
+              <RequireRole area="sell">
+                <ProductForm />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/vender/carga-rapida"
+            element={
+              <RequireRole area="sell">
+                <QuickUpload />
               </RequireRole>
             }
           />
