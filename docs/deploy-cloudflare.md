@@ -22,3 +22,7 @@ Cuando fusiones la rama en `main`, vuelve a poner `main`.
 1. Copia la URL (`garagesales.<tu-subdominio>.workers.dev`).
 2. Supabase → Authentication → URL Configuration → `Site URL` = esa URL, y agrégala a Redirect URLs.
 3. Con `garagesales.bo` ya comprado: Settings → Domains & Routes → Add → Custom domain.
+
+## Solución de problemas
+- **`Your Wrangler configuration is missing a previews block`** (compilaciones de ramas distintas de `main`): el comando de vista previa de Cloudflare ahora es `npx wrangler preview` y exige `"previews": {}` en `apps/pwa/wrangler.jsonc`. Ya está agregado. Esas compilaciones solo afectan las vistas previas; el despliegue de `main` usa `npx wrangler deploy` y no depende de ese bloque.
+- **`The version of Vite ... cannot be automatically configured`**: usar Vite 6 o superior (ya aplicado).
