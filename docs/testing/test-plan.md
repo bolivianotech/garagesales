@@ -28,20 +28,20 @@ Este documento define **cómo** se prueba GarageSales. Los **resultados** de cad
 
 ## 4. Casos manuales (aceptación e integración real)
 
-Se ejecutan en el entorno desplegado. Registrar el resultado en la tabla (fecha, quién, evidencia como captura o enlace). Estado inicial: **pendiente de ejecución**.
+Se ejecutan en el entorno desplegado siguiendo la [guía paso a paso](manual-test-guide.md). Los resultados se registran en [`manual-results.md`](manual-results.md). Estado inicial: **pendiente de ejecución**.
 
-| ID | Requisito | Precondición | Pasos | Resultado esperado | Resultado | Fecha / Ejecutor |
-|---|---|---|---|---|---|---|
-| MT-01 | FR-001, FR-002 | Migraciones aplicadas; correo de prueba | 1. Abrir la app. 2. Registrarse con correo y contraseña de 8+ caracteres. 3. Cerrar sesión e ingresar de nuevo. 4. Completar nombre y teléfono en "Mi cuenta". | Se crea la cuenta, se ingresa y los datos quedan guardados. | ⏳ Pendiente | |
-| MT-02 | FR-003, FR-005 | Cuenta comprador; cuenta admin con rol asignado | 1. Comprador: "Solicitar ser vendedor". 2. Admin: abrir el panel y aprobar. 3. Comprador: recargar "Mi cuenta". | La tienda pasa de "En revisión" a "Aprobada" y aparece "Ir a mi panel de vendedor". | ⏳ Pendiente | |
-| MT-03 | FR-004, NFR-001 | Dos vendedores aprobados A y B, cada uno con productos | 1. Entrar como A y mirar "Mis productos". 2. Entrar como B y repetir. 3. Como A, intentar abrir `/vender/producto/<id de B>`. | Cada vendedor ve solo lo suyo; el producto ajeno no carga. | ⏳ Pendiente | |
-| MT-04 | FR-010, FR-011 (criterio de aceptación de la spec 002) | Vendedor aprobado; celular; foto de ~4 MB | 1. "Nuevo producto". 2. Subir la foto, precio 50, cantidad 3, publicar. 3. Abrir el catálogo (sin sesión). | El producto aparece con la foto reducida (≈ 400 KB, ≤ 1600 px) y precio Bs 50,00. | ⏳ Pendiente | |
-| MT-05 | FR-015 | Vendedor aprobado | 1. "Carga rápida". 2. Elegir 10 fotos a la vez. 3. Completar precio y cantidad de dos borradores. | Se crean 10 borradores; los completados se pueden publicar. | ⏳ Pendiente | |
-| MT-06 | FR-012 | Producto publicado con cantidad 1 | 1. Editar y poner cantidad 0. 2. Mirar el catálogo. 3. Reponer cantidad 2. | Pasa a "Agotado" y desaparece; al reponer vuelve a publicarse. | ⏳ Pendiente | |
-| MT-07 | FR-012 | Producto publicado | 1. "Pausar". 2. Mirar el catálogo. 3. "Publicar". | Desaparece del catálogo al pausar y vuelve al publicar. | ⏳ Pendiente | |
-| MT-08 | NFR-002 | Celular con 4G | Subir un producto con una foto de ~4 MB y cronometrar desde "Publicar" hasta volver al panel. | < 10 segundos. | ⏳ Pendiente | |
-| MT-09 | NFR-001 | Admin | Ocultar un producto (cuando exista la pantalla; hoy por SQL con `admin_set_product_hidden`). | El producto deja de verse en el catálogo y queda un registro en `audit_log`. | ⏳ Pendiente | |
-| MT-10 | Despliegue | Cloudflare con `main` actualizado | Abrir la URL pública en celular y en computador; recargar en `/cuenta`. | Carga sin errores; la recarga en rutas internas funciona. | ⏳ Pendiente | |
+| ID | Requisito | Precondición | Pasos | Resultado esperado |
+|---|---|---|---|---|
+| MT-01 | FR-001, FR-002 | Migraciones aplicadas; correo de prueba | 1. Abrir la app. 2. Registrarse con correo y contraseña de 8+ caracteres. 3. Cerrar sesión e ingresar de nuevo. 4. Completar nombre y teléfono en "Mi cuenta". | Se crea la cuenta, se ingresa y los datos quedan guardados.
+| MT-02 | FR-003, FR-005 | Cuenta comprador; cuenta admin con rol asignado | 1. Comprador: "Solicitar ser vendedor". 2. Admin: abrir el panel y aprobar. 3. Comprador: recargar "Mi cuenta". | La tienda pasa de "En revisión" a "Aprobada" y aparece "Ir a mi panel de vendedor".
+| MT-03 | FR-004, NFR-001 | Dos vendedores aprobados A y B (el B puede ser un alias `+b` del mismo Gmail), cada uno con productos | 1. Entrar como A y mirar "Mis productos". 2. Entrar como B y repetir. 3. Como A, intentar abrir `/vender/producto/<id de B>`. | Cada vendedor ve solo lo suyo; el producto ajeno no carga.
+| MT-04 | FR-010, FR-011 (criterio de aceptación de la spec 002) | Vendedor aprobado; celular; foto de ~4 MB | 1. "Nuevo producto". 2. Subir la foto, precio 50, cantidad 3, publicar. 3. Abrir el catálogo (sin sesión). | El producto aparece con la foto reducida (≈ 400 KB, ≤ 1600 px) y precio Bs 50,00.
+| MT-05 | FR-015 | Vendedor aprobado | 1. "Carga rápida". 2. Elegir 10 fotos a la vez. 3. Completar precio y cantidad de dos borradores. | Se crean 10 borradores; los completados se pueden publicar.
+| MT-06 | FR-012 | Producto publicado con cantidad 1 | 1. Editar y poner cantidad 0. 2. Mirar el catálogo. 3. Reponer cantidad 2. | Pasa a "Agotado" y desaparece; al reponer vuelve a publicarse.
+| MT-07 | FR-012 | Producto publicado | 1. "Pausar". 2. Mirar el catálogo. 3. "Publicar". | Desaparece del catálogo al pausar y vuelve al publicar.
+| MT-08 | NFR-002 | Celular con 4G | Subir un producto con una foto de ~4 MB y cronometrar desde "Publicar" hasta volver al panel. | < 10 segundos.
+| MT-09 | NFR-001, FR-005 | Admin y un producto publicado | Ocultar el producto desde la pantalla de admin y mirar el catálogo. | El producto deja de verse en el catálogo y queda un registro en `audit_log`. **Bloqueada** hasta que exista la pantalla de admin (T12 de la spec 002): la función SQL depende de la sesión del admin y no se puede ejecutar desde el SQL Editor. |
+| MT-10 | Despliegue | Cloudflare con `main` actualizado | Abrir la URL pública en celular y en computador; recargar en `/cuenta`. | Carga sin errores; la recarga en rutas internas funciona.
 
 ## 5. Cómo ejecutar todo
 

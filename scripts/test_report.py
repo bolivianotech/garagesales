@@ -70,6 +70,29 @@ def run_vitest():
         return code, out, cases
 
 
+def parse_manual_results():
+    """Lee docs/testing/manual-results.md -> {MT-xx: (etiqueta, resultado_crudo)}."""
+    f = ROOT / "docs" / "testing" / "manual-results.md"
+    out = {}
+    if not f.exists():
+        return out
+    for line in f.read_text(encoding="utf8").splitlines():
+        m = re.match(r"^\|\s*(MT-\d+)\s*\|([^|]*)\|([^|]*)\|", line)
+        if m:
+            raw = m.group(3).strip()
+            low = raw.lower()
+            if low.startswith("ok"):
+                label = "✅ OK"
+            elif low.startswith("falla"):
+                label = "❌ FALLA"
+            elif low.startswith("bloque"):
+                label = "⛔ Bloqueada"
+            else:
+                label = "⏳ Pendiente"
+            out[m.group(1)] = (label, m.group(2).strip())
+    return out
+
+
 def parse_requirements():
     reqs = []
     for spec in sorted((ROOT / "specs").glob("*/spec.md")):
@@ -118,6 +141,7 @@ def main():
                   and all(s["finished"] for s in sql_suites.values()))
 
     reqs = parse_requirements()
+    manual = parse_manual_results()
     by_req = {}
     for tid, rs, _d, _s, res in rows:
         for r in rs:
@@ -172,7 +196,8 @@ def main():
         elif r["id"] in MANUAL:
             in_scope += 1
             manual_n += 1
-            ids, state = "—", f"🖐 prueba manual {MANUAL[r['id']]} (pendiente de ejecución)"
+            mt = MANUAL[r["id"]]
+            ids, state = "—", f"🖐 prueba manual {mt}: {manual.get(mt, ('⏳ Pendiente', ''))[0]}"
         else:
             in_scope += 1
             ids, state = "—", "⚠️ sin prueba"
@@ -183,6 +208,16 @@ def main():
     L.append(f"**Fuera de alcance por ahora:** {deferred_n} requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.")
     L.append("")
 
+    L.append("## Pruebas manuales (registro en `manual-results.md`)")
+    L.append("")
+    L.append("| ID | Prueba | Resultado |")
+    L.append("|---|---|---|")
+    for mt, (label, name) in manual.items():
+        L.append(f"| {mt} | {name} | {label} |")
+    done = sum(1 for v in manual.values() if v[0] in ("✅ OK", "❌ FALLA"))
+    L.append("")
+    L.append(f"**Ejecutadas:** {done}/{len(manual)} · **OK:** {sum(1 for v in manual.values() if v[0] == '✅ OK')} · **Falla:** {sum(1 for v in manual.values() if v[0] == '❌ FALLA')} · **Bloqueadas:** {sum(1 for v in manual.values() if v[0] == '⛔ Bloqueada')}.")
+    L.append("")
     L.append("## Detalle de casos ejecutados")
     L.append("")
     L.append("| ID | Requisitos | Descripción | Suite | Resultado |")
