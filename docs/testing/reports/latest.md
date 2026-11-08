@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-08 16:15
-- **Commit:** `aa874d2` · **Rama:** `claude/dreamy-faraday-ivzqi8`
+- **Fecha (UTC):** 2026-11-08 17:14
+- **Commit:** `ad53877` · **Rama:** `claude/dreamy-faraday-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -24,21 +24,21 @@
 
 | Requisito | Spec | Casos automatizados | Estado |
 |---|---|---|---|
-| FR-001 | 001 | — | 🖐 prueba manual MT-01 (pendiente de ejecución) |
+| FR-001 | 001 | — | 🖐 prueba manual MT-01: ⏳ Pendiente |
 | FR-002 | 001 | TC-001-01, TC-001-03, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-003 | 001 | TC-001-05, TC-001-06, TC-001-07, TC-002-07, TC-002-29 | ✅ cubierto |
 | FR-004 | 001 | TC-001-02, TC-001-09, TC-001-10, TC-001-11, TC-002-02, TC-002-08, TC-002-16, TC-002-18, TC-002-28, TC-002-30, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-005 | 001 | TC-001-08, TC-001-15, TC-002-22, TC-002-23, TC-002-24, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-006 | 001 | TC-001-04 | ✅ cubierto |
 | NFR-001 | 001 | TC-001-12, TC-001-13 | ✅ cubierto |
-| FR-015 | 002 | — | 🖐 prueba manual MT-05 (pendiente de ejecución) |
+| FR-015 | 002 | — | 🖐 prueba manual MT-05: ⏳ Pendiente |
 | FR-016 | 002 | — | ⏳ diferido a Fase 4 (pago confirmado) |
 | FR-010 | 002 | TC-002-01, TC-002-04, TC-002-05, TC-002-06, TC-002-09, TC-002-10, TC-002-11, TC-002-12, TC-002-15, TC-UI-01, TC-UI-02, TC-UI-03, TC-UI-04, TC-UI-09, TC-UI-10, TC-UI-11, TC-UI-12, TC-UI-13 | ✅ cubierto |
 | FR-011 | 002 | TC-002-27, TC-002-31, TC-UI-05, TC-UI-06, TC-UI-07, TC-UI-08 | ✅ cubierto |
 | FR-012 | 002 | TC-002-03, TC-002-13, TC-002-14, TC-002-21 | ✅ cubierto |
 | FR-013 | 002 | — | ⏳ diferido a Fase 3 (pedidos) |
 | FR-014 | 002 | — | ⏳ diferido a Fase 3 (ventas en el panel) |
-| NFR-002 | 002 | — | 🖐 prueba manual MT-08 (pendiente de ejecución) |
+| NFR-002 | 002 | — | 🖐 prueba manual MT-08: ⏳ Pendiente |
 | NFR-003 | 002 | — | ⏳ diferido a Fase 5 (modo sin red) |
 | FR-020 | 003 | — | ⏳ fase aún no implementada |
 | FR-021 | 003 | — | ⏳ fase aún no implementada |
@@ -78,6 +78,23 @@
 
 **En alcance de lo implementado:** 16 requisitos · **con prueba automatizada:** 13 (81 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
 **Fuera de alcance por ahora:** 35 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
+
+## Pruebas manuales (registro en `manual-results.md`)
+
+| ID | Prueba | Resultado |
+|---|---|---|
+| MT-10 | El sitio carga y las rutas internas funcionan al recargar | ⏳ Pendiente |
+| MT-01 | Registro, confirmación de correo, ingreso y datos de perfil | ⏳ Pendiente |
+| MT-02 | Solicitud de vendedor y aprobación del admin | ⏳ Pendiente |
+| MT-04 | Subir producto con foto de ~4 MB y verlo en el catálogo | ⏳ Pendiente |
+| MT-06 | Cantidad 0 lo marca agotado; al reponer vuelve | ⏳ Pendiente |
+| MT-07 | Pausar y publicar | ⏳ Pendiente |
+| MT-05 | Carga rápida de 10 fotos | ⏳ Pendiente |
+| MT-03 | Aislamiento: un vendedor no ve ni abre lo del otro | ⏳ Pendiente |
+| MT-08 | Subida en menos de 10 s con 4G | ⏳ Pendiente |
+| MT-09 | Admin oculta un producto y queda auditado | ⛔ Bloqueada |
+
+**Ejecutadas:** 0/10 · **OK:** 0 · **Falla:** 0 · **Bloqueadas:** 1.
 
 ## Detalle de casos ejecutados
 
