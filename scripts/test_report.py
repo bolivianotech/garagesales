@@ -85,6 +85,8 @@ def parse_manual_results():
                 label = "✅ OK"
             elif low.startswith("falla"):
                 label = "❌ FALLA"
+            elif low.startswith("parcial"):
+                label = "🟡 Parcial"
             elif low.startswith("bloque"):
                 label = "⛔ Bloqueada"
             else:
@@ -216,7 +218,7 @@ def main():
         L.append(f"| {mt} | {name} | {label} |")
     done = sum(1 for v in manual.values() if v[0] in ("✅ OK", "❌ FALLA"))
     L.append("")
-    L.append(f"**Ejecutadas:** {done}/{len(manual)} · **OK:** {sum(1 for v in manual.values() if v[0] == '✅ OK')} · **Falla:** {sum(1 for v in manual.values() if v[0] == '❌ FALLA')} · **Bloqueadas:** {sum(1 for v in manual.values() if v[0] == '⛔ Bloqueada')}.")
+    L.append(f"**Ejecutadas:** {done}/{len(manual)} · **Parciales:** {sum(1 for v in manual.values() if v[0] == '🟡 Parcial')} · **OK:** {sum(1 for v in manual.values() if v[0] == '✅ OK')} · **Falla:** {sum(1 for v in manual.values() if v[0] == '❌ FALLA')} · **Bloqueadas:** {sum(1 for v in manual.values() if v[0] == '⛔ Bloqueada')}.")
     L.append("")
     L.append("## Detalle de casos ejecutados")
     L.append("")
