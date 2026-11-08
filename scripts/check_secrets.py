@@ -20,6 +20,9 @@ SKIP_DIRS = ("docs/testing/reports/", "node_modules/", "dist/")
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".heic")
 # Llave de EJEMPLO publicada en el manual del banco (API Market v1.3.0, sección 5). No es una credencial.
 PUBLIC_EXAMPLES = {"40A318B299F245C2B697176723088629"}
+# Carpetas con credenciales FICTICIAS a propósito (banco simulado y pruebas): aquí NO se aplica la regla de
+# "valor asignado a password/token", pero sí las de llaves hexadecimales, JWT y claves privadas.
+DEMO_PATHS = ("examples/qr-baneco-demo/",)
 PLACEHOLDER = re.compile(r"(?i)(\.\.\.|xxx|<|>|cambiar|tu-|tu_|ejemplo|example|placeholder|changeme|valor|\$\{|your)")
 
 RULES = [
@@ -50,6 +53,8 @@ def scan_text(name, text):
                 if m.group(0).upper() in PUBLIC_EXAMPLES:
                     continue
                 findings.append((name, ln, label, mask(m.group(0))))
+        if name.startswith(DEMO_PATHS):
+            continue
         for m in ASSIGN.finditer(line):
             var, val = m.group(1), m.group(2)
             if var.startswith("VITE_") or PLACEHOLDER.search(val) or val.startswith("process.env") or val.startswith("Deno.env"):
@@ -93,8 +98,11 @@ def self_test():
         "g.txt": "-----BEGIN PRIVATE KEY-----\n",
         "h.md": "ejemplo público del manual: 40A318B299F245C2B697176723088629\n",
         "i.md": "otra llave: 40A318B299F245C2B697176723088630\n",
+        "otra/app.mjs": "const passwordPlano = 'unaClaveReal12345'\n",
+        "examples/qr-baneco-demo/ok.mjs": "const passwordPlano = 'clave-demo-123'\n",
+        "examples/qr-baneco-demo/mal.mjs": "const llave = '" + "B7" * 16 + "'\n",
     }
-    expect_hits = {"a.env", "b.txt", "c.env", "g.txt", "i.md"}
+    expect_hits = {"a.env", "b.txt", "c.env", "g.txt", "i.md", "otra/app.mjs", "examples/qr-baneco-demo/mal.mjs"}
     got = set()
     for name, text in fake.items():
         if scan_text(name, text):
