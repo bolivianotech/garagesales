@@ -25,7 +25,7 @@
 ## Abiertas
 | # | Pregunta | Bloquea |
 |---|---|---|
-| Q27 | **Contraseña** del usuario API de certificación (usuario y llave AES ya existen) y URL de producción. Se cargan como secretos, no por el chat. | Fase 4 |
+| Q27 | **Credencial `password` del `authenticate`:** el PDF pide `userName` + `password` (cifrado), pero el banco entregó solo el usuario (A24627210) y la llave AES. Preguntar al banco qué valor va en `password` (¿la clave del portal de usuarios?, ¿se genera aparte?) y la URL de producción. | Fase 4 |
 | Q28 | **Notificación de pago:** registrar en el portal del banco la URL de la función de aviso y su token, cuando exista el despliegue en Supabase. | Fase 4 |
 | Q29 | **Correos de personal:** el de `admin` y el de `finance_admin` (se registran en la app y luego se asignan con `bootstrap_staff_role`). | T10 |
 | Q30 | **Aplicar la migración** en Supabase y habilitar Google/confirmación de correo (ver `docs/setup-supabase.md`). | T9, T11 |

@@ -1,0 +1,9 @@
+{
+  // Despliegue estático de la PWA en Cloudflare (Workers Builds). Las rutas de la app (/cuenta, /admin) caen en index.html.
+  "name": "garagesales",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
