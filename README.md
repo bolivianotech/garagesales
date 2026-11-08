@@ -23,6 +23,7 @@ Marketplace de garage sales: los **vendedores** publican productos (foto, precio
 | [`docs/manuales/`](docs/manuales) | Manuales de usuario: comprador, vendedor, admin general, finanzas |
 | [`docs/uat/`](docs/uat/00-plan-uat.md) | Pruebas de aceptación por rol (55 casos) |
 | [`docs/testing/e2e-plan.md`](docs/testing/e2e-plan.md) | Plan de pruebas integrales (E2E) |
+| [`examples/qr-baneco-demo/`](examples/qr-baneco-demo/GUIA.md) | **Proyecto independiente** de 1 o 2 productos con QR del banco (para entregar al programador sin dar acceso a este repositorio) |
 | [`docs/open-questions.md`](docs/open-questions.md) | Preguntas abiertas que bloquean specs |
 | [`specs/`](specs) | Una carpeta por feature: `spec.md` → `plan.md` → `tasks.md` |
 

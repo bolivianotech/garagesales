@@ -114,6 +114,18 @@ def run_e2e_smoke():
     return p.returncode, "", cases
 
 
+def run_demo_tests():
+    """Proyecto de ejemplo del QR del banco (examples/qr-baneco-demo), con banco simulado."""
+    d = ROOT / "examples" / "qr-baneco-demo"
+    code, out = sh(["node", "--test", "--test-reporter=tap"], cwd=d)
+    cases = []
+    for line in out.splitlines():
+        m = re.match(r"^(not ok|ok) \d+ - (.*)$", line.strip())
+        if m:
+            cases.append((m.group(2), "PASS" if m.group(1) == "ok" else "FAIL", "qr-baneco-demo"))
+    return code, out, cases
+
+
 def run_secret_checks():
     c1, o1 = sh(["python3", "-I", "scripts/check_secrets.py", "--self-test"])
     c2, o2 = sh(["python3", "-I", "scripts/check_secrets.py"])
@@ -175,6 +187,7 @@ def main():
     nd_code, nd_out, nd_cases = run_node_tests()
     sec_cases, sec_ok, sec_out = run_secret_checks()
     e2e_code, e2e_out, e2e_cases = run_e2e_smoke()
+    demo_code, demo_out, demo_cases = run_demo_tests()
     tc_code, tc_out = sh(["npm", "run", "typecheck"], cwd=PWA)
     bd_code, bd_out = sh(["npm", "run", "build"], cwd=PWA)
 
@@ -192,15 +205,15 @@ def main():
         reqs = sorted(set(REQ_RE.findall(full)))
         rows.append((tid, reqs, desc, suite, res))
 
-    for full, res, suite in nd_cases + sec_cases + e2e_cases:
-        m = ID_RE.match(full) or re.match(r"^(E2E-\d+)\s+(.*)$", full)
+    for full, res, suite in nd_cases + sec_cases + e2e_cases + demo_cases:
+        m = ID_RE.match(full) or re.match(r"^(E2E-\d+)\s+(.*)$", full) or re.match(r"^([A-Z]{2,6}-\d{2})\s+(.*)$", full)
         tid, desc = (m.group(1), m.group(2)) if m else ("SIN-ID", full)
         rows.append((tid, sorted(set(REQ_RE.findall(desc))), desc, suite, res))
 
     passed = sum(1 for r in rows if r[4] == "PASS")
     failed = sum(1 for r in rows if r[4] == "FAIL")
     no_id = sum(1 for r in rows if r[0] == "SIN-ID")
-    overall_ok = (sql_code == 0 and nd_code == 0 and sec_ok and (e2e_code in (None, 0)) and ui_code == 0 and tc_code == 0 and bd_code == 0 and failed == 0
+    overall_ok = (sql_code == 0 and nd_code == 0 and demo_code == 0 and sec_ok and (e2e_code in (None, 0)) and ui_code == 0 and tc_code == 0 and bd_code == 0 and failed == 0
                   and all(s["finished"] for s in sql_suites.values()))
 
     reqs = parse_requirements()
@@ -237,6 +250,7 @@ def main():
         L.append("| E2E · humo (Playwright) | ⏸ no ejecutado | Falta `npm install` en `e2e/` |")
     else:
         L.append(f"| E2E · humo (Playwright) | {'✅' if e2e_code == 0 else '❌'} | {sum(1 for c in e2e_cases if c[1] == 'PASS')}/{len(e2e_cases)} casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |")
+    L.append(f"| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | {'✅' if demo_code == 0 else '❌'} | {sum(1 for c in demo_cases if c[1] == 'PASS')}/{len(demo_cases)} casos OK; **no prueba el banco real** |")
     L.append(f"| Seguridad · escáner de secretos | {'✅' if sec_ok else '❌'} | {sum(1 for c in sec_cases if c[1] == 'PASS')}/{len(sec_cases)} casos OK |")
     L.append(f"| Tipos · `tsc --noEmit` | {'✅' if tc_code == 0 else '❌'} | |")
     L.append(f"| Compilación · `vite build` | {'✅' if bd_code == 0 else '❌'} | |")

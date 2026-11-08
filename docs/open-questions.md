@@ -34,7 +34,7 @@
 ## Abiertas nuevas (2026-11-08)
 | # | Pregunta | Bloquea |
 |---|---|---|
-| Q31 | **Rotar la llave AES y la credencial de API** (se expusieron en un repo público) y **pasar el repositorio a privado**. Ver `docs/handbook/09-seguridad-y-secretos.md`. | Todo uso real del banco |
+| Q31 | **Rotar la llave AES y la credencial de API** (se expusieron en un repo público), **pasar el repositorio a privado**, fusionar la rama limpia `claude/garagesales-limpia-ivzqi8` y **borrar la rama anterior**. Ver `docs/handbook/09-seguridad-y-secretos.md`. | Todo uso real del banco |
 | Q32 | El banco responde `404 "Usuario no habilitado para uso de apis"` a `authenticate`: pedir la habilitación del usuario en certificación (punto 3 de la consulta). | Fase 4 |
 | Q33 | El estudiante que integró QR Conecta en 2 sistemas puede aclarar: qué lleva `password`, modo AES/IV/relleno, ambiente y usuario que usó. Compartir **solo explicación**, nunca llaves. | Fase 4 |
 | Q34 | Confirmar el mínimo de pago por QR (¿Bs 0,01?) para los UAT. | UAT |

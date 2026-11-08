@@ -42,10 +42,12 @@ Los tiempos son **horas de trabajo efectivo** (no calendario) con el equipo ya f
 |---|---|---|---|
 | El usuario API no está habilitado en certificación | Prueba con Hoppscotch al endpoint `authenticate` devolvió `404 "Usuario no habilitado para uso de apis"` | Pedir al banco habilitar el usuario en `apimktdesa` (punto 3 de `docs/integraciones/consulta-al-banco.md`). Preguntar al estudiante que ya integró QR Conecta en qué ambiente y con qué usuario lo hizo | Dueño |
 | Qué lleva el campo `password` | El banco no entregó contraseña; el ejemplo de Hoppscotch envía un valor cifrado | Pedir al estudiante o al banco cómo se obtiene el texto que se cifra | Dueño |
-| Modo AES, IV y relleno | No documentado en el PDF | Obtenerlo del estudiante o del banco y fijarlo con un caso de prueba (`supabase/functions/_shared/aes`) | Dueño + equipo |
+| ~~Modo AES, IV y relleno~~ | **Resuelto** con el ejemplo público del manual (AES-256-CBC, IV antepuesto, llave UTF-8 de 32 caracteres) | Confirmar con tu usuario en certificación con `npm run probar-aes` del proyecto de ejemplo | Programador |
 | URL de producción y proceso de paso a producción | No documentado | Consulta al banco | Dueño |
 
-> **Seguridad:** el 2026-11-08 se subieron al repositorio público dos capturas con la llave AES y un valor de password cifrado (commit `6ca9b28`). Se retiraron del árbol de archivos, pero **siguen en el historial**. Obligatorio: regenerar la llave AES en el portal del banco y cambiar la contraseña antes de cualquier prueba real. Ver `docs/handbook/09-seguridad-y-secretos.md`.
+> **Seguridad:** el 2026-11-08 se subieron al repositorio público dos capturas con la llave AES y un valor de password cifrado (commit `6ca9b28`, solo en la rama de trabajo anterior; **`main` está limpia**, verificado en sus 29 commits). Se creó una **rama limpia** (`claude/garagesales-limpia-ivzqi8`) sin ese commit. Obligatorio: regenerar la llave AES y cambiar la contraseña en el portal del banco, pasar el repositorio a privado y borrar la rama anterior. Ver `docs/handbook/09-seguridad-y-secretos.md`.
+
+> **Proyecto de ejemplo para el programador:** `examples/qr-baneco-demo/` (independiente, sin dependencias, 38 pruebas) demuestra la integración con el banco; su guía está en `GUIA.md`.
 
 ## 4. Decisiones del dueño del producto (cronológico)
 

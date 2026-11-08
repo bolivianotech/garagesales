@@ -49,7 +49,7 @@ Nunca en el chat, en el repo ni en el frontend. Dos lugares válidos:
 | # | Hallazgo | Acción |
 |---|---|---|
 | H1 | La URL que indicaste (`accounts/queryMovements`) **no aparece** en el v1.3.0; el PDF documenta `POST /api/accounts/history`. | Confirmar con el banco cuál es la correcta; mientras tanto se usa `history`. |
-| H2 | El banco solo indica AES con llave de 256 bits (32 bytes); no da modo, IV ni relleno. El ejemplo cifra "1234" a 32 bytes en base64. | Probar variantes (CBC/ECB, IV prefijado o fijo, PKCS7) hasta que el resultado local coincida con `/authentication/encrypt` en **certificación**, y fijar un test con ese vector. Nunca enviar la llave de producción a ese endpoint: viaja en la URL (`aesKey=` en query). |
+| H2 | ~~Modo, IV y relleno de AES sin documentar~~ **Deducido y verificado con el ejemplo público del manual**: AES-256-CBC, llave = los 32 caracteres como UTF-8, IV de 16 bytes antepuesto, resultado `base64(IV + cifrado)`, relleno PKCS#7. Descifrar el ejemplo del manual (`KJAz…Seos=`) con la llave de ejemplo da `1234`. | Implementado en `examples/qr-baneco-demo/src/aes.mjs` con su prueba. Confirmar con **tu** usuario en certificación: `npm run probar-aes` (solo con la llave de certificación). |
 | H3 | `transactionId` es id del comercio en `generateQR`, pero PaymentQR lo describe como número de transacción del banco. | Usar `qrId` como clave; verificar en certificación qué devuelve `transactionId`. |
 | H4 | `dueDate` sin hora. | Ya cubierto con `cancelQR` + control propio. |
 | H5 | Longitud máxima de `description`: **100 caracteres** (confirmado por el dueño). | Código de pedido primero y SKUs truncados con "…". |

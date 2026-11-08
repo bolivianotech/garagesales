@@ -55,3 +55,13 @@ jobs:
         working-directory: e2e
       - run: npm run smoke
         working-directory: e2e
+
+  demo-qr:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: examples/qr-baneco-demo } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node --test
+      - run: node scripts/verificar-mock.mjs

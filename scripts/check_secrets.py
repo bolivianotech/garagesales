@@ -18,6 +18,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SKIP_NAMES = {"package-lock.json", "pnpm-lock.yaml", "yarn.lock", "check_secrets.py"}
 SKIP_DIRS = ("docs/testing/reports/", "node_modules/", "dist/")
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".heic")
+# Llave de EJEMPLO publicada en el manual del banco (API Market v1.3.0, sección 5). No es una credencial.
+PUBLIC_EXAMPLES = {"40A318B299F245C2B697176723088629"}
 PLACEHOLDER = re.compile(r"(?i)(\.\.\.|xxx|<|>|cambiar|tu-|tu_|ejemplo|example|placeholder|changeme|valor|\$\{|your)")
 
 RULES = [
@@ -45,6 +47,8 @@ def scan_text(name, text):
     for ln, line in enumerate(text.splitlines(), 1):
         for label, rx in RULES:
             for m in rx.finditer(line):
+                if m.group(0).upper() in PUBLIC_EXAMPLES:
+                    continue
                 findings.append((name, ln, label, mask(m.group(0))))
         for m in ASSIGN.finditer(line):
             var, val = m.group(1), m.group(2)
@@ -87,8 +91,10 @@ def self_test():
         "e.env": "BANCO_ECONOMICO_PASSWORD=\n",
         "f.md": "Ejemplo: BANCO_ECONOMICO_AES_KEY=<tu llave>\n",
         "g.txt": "-----BEGIN PRIVATE KEY-----\n",
+        "h.md": "ejemplo público del manual: 40A318B299F245C2B697176723088629\n",
+        "i.md": "otra llave: 40A318B299F245C2B697176723088630\n",
     }
-    expect_hits = {"a.env", "b.txt", "c.env", "g.txt"}
+    expect_hits = {"a.env", "b.txt", "c.env", "g.txt", "i.md"}
     got = set()
     for name, text in fake.items():
         if scan_text(name, text):

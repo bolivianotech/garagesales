@@ -81,15 +81,18 @@ Carpeta: `supabase/functions/`. Código compartido en `_shared/`.
 - Control contable con `POST accounts/history` (rango de fechas): suma de créditos vs. suma de pagos confirmados.
 - Requiere una migración adicional `…_reconciliation.sql` (tabla `bank_reconciliation`).
 
-### 2.2 Cifrado AES (el punto más delicado)
-- Llave: 256 bits (32 bytes), la entrega el banco; vive en `BANCO_ECONOMICO_AES_KEY`.
-- **[VERIFICAR]** modo (CBC/ECB/GCM), vector de inicialización, relleno y formato de la llave (32 caracteres de texto o 64 hexadecimales).
-- Procedimiento para fijarlo sin adivinar:
-  1. En **certificación**, llamar `GET /api/authentication/encrypt?text=1234&aesKey=<LLAVE DE PRUEBA>` (la llave viaja en la URL, por eso **solo** con la llave de certificación, nunca la de producción).
-  2. Probar combinaciones hasta que `aes.ts` produzca el mismo resultado para el mismo texto.
-  3. Guardar ese par como caso de prueba permanente.
-  4. Verificar que `authenticate` con el `password` cifrado devuelva `responseCode: 0`.
-- Mientras tanto, el `MockProvider` permite desarrollar y probar todo lo demás.
+### 2.2 Cifrado AES (resuelto con el ejemplo público del manual)
+Configuración **deducida y verificada** con el ejemplo del manual del banco (`1234` + llave de ejemplo → `KJAzqjmwjxIOqVo5J3IH0/7fGmNdzuyszrlqexVSeos=`):
+
+| Parámetro | Valor |
+|---|---|
+| Algoritmo | AES-256-CBC, relleno PKCS#7 |
+| Llave | Los 32 caracteres de la llave como texto UTF-8 (32 bytes) |
+| IV | 16 bytes aleatorios antepuestos; resultado `base64(IV + cifrado)` |
+
+- Implementación de referencia y pruebas: `examples/qr-baneco-demo/src/aes.mjs` y `test/aes.test.mjs` (descifrar el ejemplo del manual da `1234`).
+- **Falta confirmarlo con el usuario real** en certificación: `npm run probar-aes` del proyecto de ejemplo prueba ambos sentidos con los endpoints `encrypt` y `decrypt` del banco (la llave viaja en la URL: **solo la de certificación**).
+- El `MockProvider` permite desarrollar el resto mientras tanto.
 
 ## 3. Secretos a cargar (nombres; los valores nunca van en el repositorio)
 

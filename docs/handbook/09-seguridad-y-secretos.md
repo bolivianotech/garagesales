@@ -25,10 +25,10 @@
 |---|---|
 | Qué pasó | Se subió a un repositorio **público** el commit `6ca9b28` con `docs/image003.png` (llave AES visible) y `docs/text_prod.jpeg` (usuario y password cifrado en una prueba del banco) |
 | Detección | Al revisar el contenido de los archivos subidos |
-| Contención | Archivos retirados del árbol en el commit `bc751bd`; `.gitignore` reforzado |
+| Contención | Archivos retirados del árbol y `.gitignore` reforzado. `main` se auditó (29 commits, sin imágenes ni patrones de secretos) y **está limpia**: el commit solo existía en la rama de trabajo. Se creó la rama limpia `claude/garagesales-limpia-ivzqi8` **sin** ese commit |
 | Lo que NO se resuelve con eso | El historial de git sigue conteniendo los archivos |
 | Acciones obligatorias del titular | (1) Regenerar la llave AES en el portal; (2) cambiar la contraseña/credencial de API; (3) pasar el repositorio a **privado**; (4) revisar el `.docx` subido; (5) avisar al estudiante que usa la misma credencial en sus sistemas |
-| Acciones opcionales | Eliminar la rama y cerrar el PR #6, o reescribir el historial con una herramienta de purga; igual hay que rotar |
+| Acciones adicionales | Fusionar la rama limpia y **borrar la rama anterior** (`claude/dreamy-faraday-ivzqi8`) en GitHub → *Branches* → papelera. GitHub puede seguir sirviendo el commit por su código durante un tiempo, así que **rotar sigue siendo obligatorio** |
 | Estado | **Abierto hasta que se confirme la rotación** |
 
 ### Procedimiento de rotación (30 minutos)
