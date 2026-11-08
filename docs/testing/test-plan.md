@@ -11,7 +11,10 @@ Este documento define **cómo** se prueba GarageSales. Los **resultados** de cad
 | Calidad estática | Tipos y compilación | `tsc --noEmit`, `vite build` | Local, CI y Cloudflare | Automático |
 | Integración real | Supabase real, Storage, Auth, Cloudflare | Casos manuales `MT-xx` (sección 4) | Entorno desplegado | Dueño del producto |
 | Aceptación | Criterios Given/When/Then de cada spec | Casos manuales y automáticos trazados | — | Dueño + equipo |
-| Integración bancaria | QR, estado del pago, conciliación | Sandbox del banco (spec 004) | Certificación | Pendiente (Fase 4) |
+| Integración bancaria | QR, estado del pago, conciliación | Matriz `INT-01..15` del [runbook 01](../runbooks/01-integracion-qr-dinamico.md), sandbox del banco | Certificación | Pendiente (Fase 4) |
+| Integral (E2E) | Ciclo completo en navegador real | Playwright, [plan E2E](e2e-plan.md) | Local, certificación, producción | `@smoke` ejecutado; `@live` y `@full` pendientes |
+| Aceptación (UAT) | Cada rol, con personas reales | Guiones de [`docs/uat/`](../uat/00-plan-uat.md) | Certificación y producción (Bs 0,01) | Pendiente |
+| Mantenimiento | Limpieza de datos de prueba | `TC-005-xx` (SQL) y `TC-SCR-xx` (script de imágenes) | Local y CI | ✅ |
 
 ## 2. Convenciones
 

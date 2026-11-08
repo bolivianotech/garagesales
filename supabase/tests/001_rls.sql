@@ -125,13 +125,18 @@ do $$ begin
   raise notice 'OK   TC-001-23 FR-096 cadena de auditoría íntegra';
 end $$;
 
--- Manipulación detectable: se desactivan triggers como superusuario y se altera una fila
-alter table public.audit_log disable trigger audit_no_update;
-update public.audit_log set reason = 'alterado' where id = (select min(id) from public.audit_log where action like 'store.%');
-alter table public.audit_log enable trigger audit_no_update;
-do $$ begin
+-- Manipulación detectable: se altera una fila como superusuario, se comprueba la detección y se RESTAURA
+do $$
+declare rid bigint; old_reason text;
+begin
+  alter table public.audit_log disable trigger audit_no_update;
+  select id, reason into rid, old_reason from public.audit_log where action like 'store.%' order by id limit 1;
+  update public.audit_log set reason = 'alterado' where id = rid;
   if public.verify_audit_chain() is null then raise exception 'FALLÓ FR-096: no se detectó la manipulación'; end if;
   raise notice 'OK   TC-001-24 FR-096 manipulación detectada';
+  update public.audit_log set reason = old_reason where id = rid;   -- restaura para no afectar otras suites
+  alter table public.audit_log enable trigger audit_no_update;
+  if public.verify_audit_chain() is not null then raise exception 'FALLÓ: la cadena no quedó restaurada'; end if;
 end $$;
 
 \echo TODAS LAS PRUEBAS PASARON
