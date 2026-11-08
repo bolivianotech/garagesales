@@ -21,13 +21,19 @@ where table_schema = 'public' and table_name in ('profiles','stores','products',
 Debe devolver `5`. Si devuelve menos, avísame antes de seguir.
 
 ### 0.3 Las cuentas que necesitas
-Con Gmail puedes crear varias cuentas distintas usando `+algo` en tu correo: `jimrequenallorentty+b@gmail.com` llega a la misma bandeja que `jimrequenallorentty@gmail.com`, pero para Supabase es otra cuenta.
+Para el segundo vendedor y el comprador necesitas correos distintos, pero no hace falta crear cuentas de Gmail nuevas.
 
-| Rol | Correo | Cómo se crea |
+**Truco de Gmail (se llama "dirección con +"):** Gmail ignora todo lo que va entre el signo `+` y el `@`. Entonces `jimrequenallorentty+b@gmail.com` **llega a tu misma bandeja** que `jimrequenallorentty@gmail.com`, pero para Supabase es otro correo y por lo tanto otra cuenta. Se escribe **textualmente con el signo `+`**, en minúsculas.
+
+> **Cuidado:** `jimrequenallorenttyb@gmail.com` (sin el `+`) **no es lo mismo**: sería una dirección de Gmail distinta que quizá pertenece a otra persona. No la uses.
+
+Si el correo de confirmación de una cuenta con `+` no llega en unos minutos (revisa también Spam), crea la cuenta desde Supabase → **Authentication → Users → Add user → Create new user**, con **Auto Confirm User** marcado. Así no depende del correo.
+
+| Rol | Correo (escríbelo exactamente así) | Cómo se crea |
 |---|---|---|
-| Admin | `jimrequena@bolivianotech.com` | Ya existe. Debe tener el rol `admin` (ver 0.4). |
-| Finanzas | `requenataniel@gmail.com` *(confirma si es @gmail.com o @bolivianotech.com)* | Ya existe con rol `finance_admin`. |
-| Vendedor A | `jimrequenallorentty@gmail.com` | Ya registrada y confirmada. |
+| Admin | `jimrequena@bolivianotech.com` | Ya existe con rol `admin`. |
+| Finanzas | `requenataniel@gmail.com` | Ya existe con rol `finance_admin`. |
+| Vendedor A | `jimrequenallorentty@gmail.com` | Ya registrada y confirmada (aún `buyer` hasta que la apruebes en MT-02). |
 | Vendedor B | `jimrequenallorentty+b@gmail.com` | Se crea en MT-03. |
 | Comprador | `jimrequenallorentty+c@gmail.com` | Se crea en MT-01. |
 
@@ -129,8 +135,13 @@ select public.bootstrap_staff_role('CORREO_DE_FINANZAS', 'finance_admin');
 1. Ventana nueva → registra el **Vendedor B** (`jimrequenallorentty+b@gmail.com`), confirma su correo, completa su perfil y solicita ser vendedor con `Tienda B`. El admin la aprueba (como en MT-02).
 2. Como Vendedor B, publica un producto `Zapatos B` (foto, precio 80, cantidad 1).
 3. Como Vendedor B, abre **Mis productos**: solo debe ver `Zapatos B` (no la camisa ni los borradores del A).
-4. En el panel del Vendedor A, copia desde la barra del navegador la dirección de la camisa (`/vender/producto/<ID>`). Pégala en la sesión del Vendedor B.
-5. Mira qué pasa.
+4. Obtén el ID del producto del Vendedor A. En Supabase → **SQL Editor** ejecuta:
+   ```sql
+   select id, title from public.products where title = 'Camisa azul';
+   ```
+   Copia el valor de la columna `id` (una cadena larga como `3f2a…`).
+5. En la sesión del **Vendedor B**, escribe en la barra del navegador: `https://garagesales.requenataniel.workers.dev/vender/producto/` seguido del ID copiado, y pulsa Enter.
+6. Mira qué pasa.
 
 **Debe pasar:** el Vendedor B ve únicamente lo suyo; al abrir la dirección del producto del A, no se cargan sus datos (aparece un error o un formulario vacío, nunca los datos del A).
 **Si falla:** es una falla de seguridad importante. No sigas probando datos reales y avísame al instante.

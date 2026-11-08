@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-08 17:14
-- **Commit:** `ad53877` · **Rama:** `claude/dreamy-faraday-ivzqi8`
+- **Fecha (UTC):** 2026-11-08 21:16
+- **Commit:** `1617e5a` · **Rama:** `claude/dreamy-faraday-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -15,49 +15,54 @@
 |---|---|---|
 | Base de datos · `001_rls.sql` | ✅ | 24 casos OK |
 | Base de datos · `002_products.sql` | ✅ | 31 casos OK |
+| Base de datos · `003_orders.sql` | ✅ | 60 casos OK |
+| Base de datos · `004_concurrency` | ✅ | 5 casos OK |
 | Interfaz · Vitest | ✅ | 17/17 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **72 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **137 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
 | Requisito | Spec | Casos automatizados | Estado |
 |---|---|---|---|
-| FR-001 | 001 | — | 🖐 prueba manual MT-01: ⏳ Pendiente |
-| FR-002 | 001 | TC-001-01, TC-001-03, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
+| FR-001 | 001 | — | 🖐 prueba manual MT-01: ✅ OK |
+| FR-002 | 001 | TC-001-01, TC-001-03, TC-003-02, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-003 | 001 | TC-001-05, TC-001-06, TC-001-07, TC-002-07, TC-002-29 | ✅ cubierto |
 | FR-004 | 001 | TC-001-02, TC-001-09, TC-001-10, TC-001-11, TC-002-02, TC-002-08, TC-002-16, TC-002-18, TC-002-28, TC-002-30, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-005 | 001 | TC-001-08, TC-001-15, TC-002-22, TC-002-23, TC-002-24, TC-UI-14, TC-UI-15, TC-UI-16, TC-UI-17 | ✅ cubierto |
 | FR-006 | 001 | TC-001-04 | ✅ cubierto |
-| NFR-001 | 001 | TC-001-12, TC-001-13 | ✅ cubierto |
-| FR-015 | 002 | — | 🖐 prueba manual MT-05: ⏳ Pendiente |
+| NFR-001 | 001 | TC-001-12, TC-001-13, TC-003-17, TC-003-18 | ✅ cubierto |
+| FR-015 | 002 | — | 🖐 prueba manual MT-05: ✅ OK |
 | FR-016 | 002 | — | ⏳ diferido a Fase 4 (pago confirmado) |
 | FR-010 | 002 | TC-002-01, TC-002-04, TC-002-05, TC-002-06, TC-002-09, TC-002-10, TC-002-11, TC-002-12, TC-002-15, TC-UI-01, TC-UI-02, TC-UI-03, TC-UI-04, TC-UI-09, TC-UI-10, TC-UI-11, TC-UI-12, TC-UI-13 | ✅ cubierto |
 | FR-011 | 002 | TC-002-27, TC-002-31, TC-UI-05, TC-UI-06, TC-UI-07, TC-UI-08 | ✅ cubierto |
 | FR-012 | 002 | TC-002-03, TC-002-13, TC-002-14, TC-002-21 | ✅ cubierto |
-| FR-013 | 002 | — | ⏳ diferido a Fase 3 (pedidos) |
+| FR-013 | 002 | TC-003-13 | ✅ cubierto |
 | FR-014 | 002 | — | ⏳ diferido a Fase 3 (ventas en el panel) |
-| NFR-002 | 002 | — | 🖐 prueba manual MT-08: ⏳ Pendiente |
+| NFR-002 | 002 | — | 🖐 prueba manual MT-08: ✅ OK |
 | NFR-003 | 002 | — | ⏳ diferido a Fase 5 (modo sin red) |
-| FR-020 | 003 | — | ⏳ fase aún no implementada |
-| FR-021 | 003 | — | ⏳ fase aún no implementada |
-| FR-022 | 003 | — | ⏳ fase aún no implementada |
-| FR-023 | 003 | — | ⏳ fase aún no implementada |
-| FR-024 | 003 | — | ⏳ fase aún no implementada |
-| FR-025 | 003 | — | ⏳ fase aún no implementada |
-| FR-026 | 003 | — | ⏳ fase aún no implementada |
-| NFR-004 | 003 | — | ⏳ fase aún no implementada |
-| FR-070 | 007 | — | ⏳ fase aún no implementada |
-| FR-071 | 007 | — | ⏳ fase aún no implementada |
-| FR-072 | 007 | — | ⏳ fase aún no implementada |
+| FR-020 | 003 | — | ⏳ diferido a Fase 3, interfaz (catálogo con filtros y stock en vivo) |
+| FR-021 | 003 | — | ⏳ diferido a Fase 3, interfaz (carrito) |
+| FR-022 | 003 | TC-003-01, TC-003-03, TC-003-04, TC-003-05, TC-003-06, TC-003-07, TC-003-08, TC-003-09, TC-003-10, TC-003-12, TC-003-16 | ✅ cubierto |
+| FR-023 | 003 | TC-003-39, TC-003-40 | ✅ cubierto |
+| FR-024 | 003 | TC-003-11 | ✅ cubierto |
+| FR-025 | 003 | TC-003-14, TC-003-15, TC-003-19 | ✅ cubierto |
+| FR-026 | 003 | — | ⏳ diferido a Fase 3, interfaz (pantalla de pago con datos de retiro) |
+| FR-023a | 003 | TC-003-32, TC-003-33 | ✅ cubierto |
+| NFR-004 | 003 | TC-003-31, TC-003-32, TC-003-33, TC-003-34, TC-004-01, TC-004-02, TC-004-03, TC-004-04, TC-004-05 | ✅ cubierto |
+| FR-070 | 007 | TC-003-27 | ✅ cubierto |
+| FR-071 | 007 | TC-003-49 | ✅ cubierto |
+| FR-072 | 007 | TC-003-48, TC-003-50, TC-003-52, TC-003-53, TC-003-54 | ✅ cubierto |
 | FR-073 | 007 | — | ⏳ fase aún no implementada |
-| FR-074 | 007 | — | ⏳ fase aún no implementada |
+| FR-074 | 007 | TC-003-51, TC-003-55, TC-003-56 | ✅ cubierto |
 | FR-075 | 007 | — | ⏳ fase aún no implementada |
 | FR-076 | 007 | — | ⏳ fase aún no implementada |
 | FR-077 | 007 | — | ⏳ fase aún no implementada |
 | FR-078 | 007 | — | ⏳ fase aún no implementada |
-| FR-079 | 007 | — | ⏳ fase aún no implementada |
+| FR-083 | 007 | TC-003-43, TC-003-44, TC-003-45, TC-003-46, TC-003-47 | ✅ cubierto |
+| FR-084 | 007 | TC-003-58, TC-003-59, TC-003-60 | ✅ cubierto |
+| FR-079 | 007 | TC-003-57 | ✅ cubierto |
 | FR-080 | 007 | — | ⏳ fase aún no implementada |
 | FR-081 | 007 | — | ⏳ fase aún no implementada |
 | FR-082 | 007 | — | ⏳ fase aún no implementada |
@@ -76,25 +81,25 @@
 | FR-090a | 008 | — | ⏳ fase aún no implementada |
 | NFR-012 | 008 | — | ⏳ fase aún no implementada |
 
-**En alcance de lo implementado:** 16 requisitos · **con prueba automatizada:** 13 (81 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
-**Fuera de alcance por ahora:** 35 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
+**En alcance de lo implementado:** 30 requisitos · **con prueba automatizada:** 27 (90 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
+**Fuera de alcance por ahora:** 24 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
 
 ## Pruebas manuales (registro en `manual-results.md`)
 
 | ID | Prueba | Resultado |
 |---|---|---|
-| MT-10 | El sitio carga y las rutas internas funcionan al recargar | ⏳ Pendiente |
-| MT-01 | Registro, confirmación de correo, ingreso y datos de perfil | ⏳ Pendiente |
-| MT-02 | Solicitud de vendedor y aprobación del admin | ⏳ Pendiente |
-| MT-04 | Subir producto con foto de ~4 MB y verlo en el catálogo | ⏳ Pendiente |
-| MT-06 | Cantidad 0 lo marca agotado; al reponer vuelve | ⏳ Pendiente |
-| MT-07 | Pausar y publicar | ⏳ Pendiente |
-| MT-05 | Carga rápida de 10 fotos | ⏳ Pendiente |
-| MT-03 | Aislamiento: un vendedor no ve ni abre lo del otro | ⏳ Pendiente |
-| MT-08 | Subida en menos de 10 s con 4G | ⏳ Pendiente |
+| MT-10 | El sitio carga y las rutas internas funcionan al recargar | ✅ OK |
+| MT-01 | Registro, confirmación de correo, ingreso y datos de perfil | ✅ OK |
+| MT-02 | Solicitud de vendedor y aprobación del admin | ✅ OK |
+| MT-04 | Subir producto con foto de ~4 MB y verlo en el catálogo | ✅ OK |
+| MT-06 | Cantidad 0 lo marca agotado; al reponer vuelve | ✅ OK |
+| MT-07 | Pausar y publicar | ✅ OK |
+| MT-05 | Carga rápida de 10 fotos | ✅ OK |
+| MT-03 | Aislamiento: un vendedor no ve ni abre lo del otro | 🟡 Parcial |
+| MT-08 | Subida en menos de 10 s con 4G | ✅ OK |
 | MT-09 | Admin oculta un producto y queda auditado | ⛔ Bloqueada |
 
-**Ejecutadas:** 0/10 · **OK:** 0 · **Falla:** 0 · **Bloqueadas:** 1.
+**Ejecutadas:** 8/10 · **Parciales:** 1 · **OK:** 8 · **Falla:** 0 · **Bloqueadas:** 1.
 
 ## Detalle de casos ejecutados
 
@@ -155,6 +160,71 @@
 | TC-002-29 | FR-003 | FR-003 tienda pendiente no sube fotos | `002_products.sql` | ✅ PASS |
 | TC-002-30 | FR-004 | FR-004 no borra fotos de otro vendedor | `002_products.sql` | ✅ PASS |
 | TC-002-31 | FR-011 | FR-011 bucket público con límite de 1 MB | `002_products.sql` | ✅ PASS |
+| TC-003-01 | FR-022 | FR-022 sin sesión no se crea pedido | `003_orders.sql` | ✅ PASS |
+| TC-003-02 | FR-002 | FR-002 comprador sin teléfono no puede comprar | `003_orders.sql` | ✅ PASS |
+| TC-003-03 | FR-022 | FR-022 carrito vacío rechazado | `003_orders.sql` | ✅ PASS |
+| TC-003-04 | FR-022 | FR-022 cantidad mayor al stock rechazada | `003_orders.sql` | ✅ PASS |
+| TC-003-05 | FR-022 | FR-022 producto pausado rechazado | `003_orders.sql` | ✅ PASS |
+| TC-003-06 | FR-022 | FR-022 producto inexistente rechazado | `003_orders.sql` | ✅ PASS |
+| TC-003-07 | FR-022 | FR-022 cantidad 0 rechazada | `003_orders.sql` | ✅ PASS |
+| TC-003-08 | FR-022 | FR-022 no puede comprar sus propios productos | `003_orders.sql` | ✅ PASS |
+| TC-003-09 | FR-022 | FR-022 el total se calcula en el servidor con los precios de la base | `003_orders.sql` | ✅ PASS |
+| TC-003-10 | FR-022 | FR-022 líneas repetidas se suman en una sola | `003_orders.sql` | ✅ PASS |
+| TC-003-11 | FR-024 | FR-024 cada ítem guarda su tienda (pedido con dos vendedores) | `003_orders.sql` | ✅ PASS |
+| TC-003-12 | FR-022 | FR-022 crear el pedido NO descuenta stock | `003_orders.sql` | ✅ PASS |
+| TC-003-13 | FR-013 | FR-013 el pedido conserva el precio con que se creó | `003_orders.sql` | ✅ PASS |
+| TC-003-14 | FR-025 | FR-025 otro comprador no ve pedidos ajenos | `003_orders.sql` | ✅ PASS |
+| TC-003-15 | FR-025 | FR-025 otro comprador no ve ítems ajenos | `003_orders.sql` | ✅ PASS |
+| TC-003-16 | FR-022 | FR-022 no se crean pedidos por inserción directa | `003_orders.sql` | ✅ PASS |
+| TC-003-17 | NFR-001 | NFR-001 el vendedor no lee la tabla de pedidos | `003_orders.sql` | ✅ PASS |
+| TC-003-18 | NFR-001 | NFR-001 el vendedor no lee pagos | `003_orders.sql` | ✅ PASS |
+| TC-003-19 | FR-025 | FR-025 el comprador ve su pedido | `003_orders.sql` | ✅ PASS |
+| TC-003-20 | FR-033 | FR-033 el cliente no puede confirmar pagos | `003_orders.sql` | ✅ PASS |
+| TC-003-21 | FR-033 | FR-033 el cliente no puede registrar QR | `003_orders.sql` | ✅ PASS |
+| TC-003-22 | FR-033 | FR-033 confirma el pago del pedido | `003_orders.sql` | ✅ PASS |
+| TC-003-23 | FR-033 | FR-033 el pedido pasa a pagado | `003_orders.sql` | ✅ PASS |
+| TC-003-24 | FR-037 | FR-037 el stock se descuenta y el producto agotado pasa a sold_out | `003_orders.sql` | ✅ PASS |
+| TC-003-25 | FR-037 | FR-037 solo se descuenta lo comprado | `003_orders.sql` | ✅ PASS |
+| TC-003-26 | FR-037 | FR-037 el producto agotado sale del catálogo público | `003_orders.sql` | ✅ PASS |
+| TC-003-27 | FR-070 | FR-070 se crea un retiro por tienda con código de 6 caracteres | `003_orders.sql` | ✅ PASS |
+| TC-003-28 | FR-034 | FR-034 confirmar dos veces no duplica el descuento | `003_orders.sql` | ✅ PASS |
+| TC-003-29 | FR-034 | FR-034 el stock no cambia en la segunda confirmación | `003_orders.sql` | ✅ PASS |
+| TC-003-30 | FR-035 | FR-035 se guarda nombre y banco de quien pagó | `003_orders.sql` | ✅ PASS |
+| TC-003-31 | NFR-004 | NFR-004 ambos compradores pueden crear el pedido (sin reserva) | `003_orders.sql` | ✅ PASS |
+| TC-003-32 | FR-023a, NFR-004 | FR-023a NFR-004 el primer pago confirmado se queda con el producto | `003_orders.sql` | ✅ PASS |
+| TC-003-33 | FR-023a, NFR-004 | FR-023a NFR-004 el segundo pago queda en revisión | `003_orders.sql` | ✅ PASS |
+| TC-003-34 | NFR-004 | NFR-004 el stock nunca queda negativo | `003_orders.sql` | ✅ PASS |
+| TC-003-35 | FR-039b | FR-039b el pedido perdedor queda en revisión con motivo | `003_orders.sql` | ✅ PASS |
+| TC-003-36 | FR-039b | FR-039b un pedido en revisión no genera retiro | `003_orders.sql` | ✅ PASS |
+| TC-003-37 | FR-039b | FR-039b un monto distinto al total queda en revisión | `003_orders.sql` | ✅ PASS |
+| TC-003-38 | FR-039b | FR-039b un pago en revisión no toca el stock | `003_orders.sql` | ✅ PASS |
+| TC-003-39 | FR-023 | FR-023 al vencer, el pedido se marca y se devuelve su QR para anularlo | `003_orders.sql` | ✅ PASS |
+| TC-003-40 | FR-023 | FR-023 el pedido vencido pasa a expired | `003_orders.sql` | ✅ PASS |
+| TC-003-41 | FR-039b | FR-039b un pago tardío se honra si el monto coincide y hay stock | `003_orders.sql` | ✅ PASS |
+| TC-003-42 | FR-039b | FR-039b el pago tardío descuenta el stock | `003_orders.sql` | ✅ PASS |
+| TC-003-43 | FR-083 | FR-083 el comprobante muestra quién pagó, sin iniciar sesión | `003_orders.sql` | ✅ PASS |
+| TC-003-44 | FR-083 | FR-083 el comprobante muestra el nombre del banco del catálogo | `003_orders.sql` | ✅ PASS |
+| TC-003-45 | FR-083 | FR-083 el comprobante separa los ítems por vendedor con su código de retiro | `003_orders.sql` | ✅ PASS |
+| TC-003-46 | FR-083 | FR-083 un token inválido no devuelve nada | `003_orders.sql` | ✅ PASS |
+| TC-003-47 | FR-083 | FR-083 un pedido sin pago confirmado no tiene comprobante | `003_orders.sql` | ✅ PASS |
+| TC-003-48 | FR-072 | FR-072 el vendedor G ve solo los retiros de su tienda | `003_orders.sql` | ✅ PASS |
+| TC-003-49 | FR-071 | FR-071 el vendedor ve nombre y teléfono de quien compró | `003_orders.sql` | ✅ PASS |
+| TC-003-50 | FR-072 | FR-072 el vendedor no ve ítems de otra tienda del mismo pedido | `003_orders.sql` | ✅ PASS |
+| TC-003-51 | FR-074 | FR-074 un código de retiro incorrecto se rechaza | `003_orders.sql` | ✅ PASS |
+| TC-003-52 | FR-072 | FR-072 el vendedor H ve solo sus retiros | `003_orders.sql` | ✅ PASS |
+| TC-003-53 | FR-072 | FR-072 otro vendedor no puede entregar un retiro ajeno | `003_orders.sql` | ✅ PASS |
+| TC-003-54 | FR-072 | FR-072 un comprador no ve retiros de vendedores | `003_orders.sql` | ✅ PASS |
+| TC-003-55 | FR-074 | FR-074 con el código correcto el retiro queda entregado | `003_orders.sql` | ✅ PASS |
+| TC-003-56 | FR-074 | FR-074 un retiro entregado no se entrega dos veces | `003_orders.sql` | ✅ PASS |
+| TC-003-57 | FR-079 | FR-079 el vendedor puede listar sus retiros entregados | `003_orders.sql` | ✅ PASS |
+| TC-003-58 | FR-084 | FR-084 el admin ve pagos confirmados y en revisión | `003_orders.sql` | ✅ PASS |
+| TC-003-59 | FR-084 | FR-084 cada pago confirmado trae pagador y enlace de comprobante | `003_orders.sql` | ✅ PASS |
+| TC-003-60 | FR-084 | FR-084 el vendedor no accede al reporte global | `003_orders.sql` | ✅ PASS |
+| TC-004-01 | NFR-004 | NFR-004 de 20 pagos simultáneos por 1 unidad, exactamente 1 queda pagado | `004_concurrency` | ✅ PASS |
+| TC-004-02 | NFR-004 | NFR-004 los otros 19 pagos quedan en revisión | `004_concurrency` | ✅ PASS |
+| TC-004-03 | NFR-004 | NFR-004 el stock termina en 0, nunca negativo | `004_concurrency` | ✅ PASS |
+| TC-004-04 | NFR-004 | NFR-004 solo 1 pedido queda en estado pagado | `004_concurrency` | ✅ PASS |
+| TC-004-05 | NFR-004 | NFR-004 se crea 1 solo retiro | `004_concurrency` | ✅ PASS |
 | TC-UI-01 | FR-010 | convierte texto a centavos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-02 | FR-010 | rechaza valores inválidos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-03 | FR-010 | formatea en bolivianos | `catalog.test.ts` | ✅ PASS |

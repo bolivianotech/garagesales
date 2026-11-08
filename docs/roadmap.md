@@ -27,9 +27,9 @@ Orden de valor: **1 → 2 → 3 → 4 (con `MockProvider`) → 7 → desplegar c
 
 ## Fase 3 — Compra (spec 003)
 1. Catálogo público con búsqueda y filtros; Realtime de stock.
-2. Carrito y checkout; creación de pedido con reserva atómica de stock (expira en 10 min).
+2. Carrito y checkout; creación de pedido **sin reserva** (gana quien paga primero; el stock se descuenta al confirmar el pago).
 3. Historial de pedidos del comprador y del vendedor.
-**Salida:** no es posible sobrevender en prueba de concurrencia.
+**Salida:** con dos pagos para la última unidad, solo uno se queda con el producto y el otro queda en revisión.
 
 ## Fase 4 — Pago QR Banco Económico (spec 004)
 1. Adaptador del banco: autenticación, cifrado AES local (validado en certificación) y `create-qr` (`generateQR`, uso único, monto fijo, glosa con SKU).

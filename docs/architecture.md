@@ -29,10 +29,10 @@ Detalle de la integración bancaria: [`integraciones/banco-economico.md`](integr
 | `seller_payout_methods` (append-only) | id, store_id, version, bank, holder, account_encrypted, qr_image_path, qr_expires_at, status, requested_by, approved_by, effective_at |
 | `pickups` | id, order_id, store_id, buyer_id, pickup_code, status, ready_at, delivered_at |
 | `audit_log` (append-only, hash encadenado) | id, at, actor_id, actor_role, ip, action, entity, before, after, reason, prev_hash, hash |
-| `settings` | commission_bps (=100), order_ttl_minutes (=10), payout_cooling_hours (=24), pickup_reminder_days |
+| `settings` | commission_bps (=100), order_valid_hours (=24), payout_cooling_hours (=24), pickup_reminder_days |
 
-## Reserva de stock
-Función SQL `create_order(items)` en transacción con `SELECT … FOR UPDATE`; descuenta stock al crear el pedido y un job lo devuelve si `expires_at` vence sin pago (llamando antes a `cancelQR`).
+## Stock: sin reserva, gana quien paga primero (ADR-0004)
+`create_order` valida stock pero no lo descuenta. `confirm_payment` bloquea las filas de producto en orden, verifica stock, monto y tienda, y descuenta; si algo falla deja pedido y pago en `review`. Los pedidos pendientes vencen a las `order_valid_hours` (24 h) y su QR se anula en el banco.
 
 ## Confirmación de pago
 `create-qr` genera el QR del pedido; `check-payment` consulta `statusQR` de los pendientes; `notify-payment` recibe el aviso opcional y solo dispara la consulta; `reconcile-daily` compara `paidQR/{fecha}` y `accounts/history`. Al ver `statusQRCode = 1` se ejecuta `confirm_payment(order_id)` en una transacción: pedido `paid`, `payments` con datos del pagador, `ledger` con comisión (redondeo a favor de la plataforma), `pickups` y salida de stock/catálogo.

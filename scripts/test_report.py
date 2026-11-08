@@ -17,13 +17,16 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PWA = ROOT / "apps" / "pwa"
 REQ_RE = re.compile(r"\b(N?FR-\d+[a-z]?)\b")
 # Specs cuya implementación aún no empieza (sus requisitos sin prueba no cuentan como falta).
-NOT_IMPLEMENTED_SPECS = {"003-compra-carrito", "007-entregas-retiro", "008-datos-cobro-auditoria"}
+NOT_IMPLEMENTED_SPECS = {"007-entregas-retiro", "008-datos-cobro-auditoria"}
 # Requisitos de specs implementadas que dependen de fases posteriores.
 DEFERRED = {
     "FR-013": "Fase 3 (pedidos)",
     "FR-014": "Fase 3 (ventas en el panel)",
     "FR-016": "Fase 4 (pago confirmado)",
     "NFR-003": "Fase 5 (modo sin red)",
+    "FR-020": "Fase 3, interfaz (catálogo con filtros y stock en vivo)",
+    "FR-021": "Fase 3, interfaz (carrito)",
+    "FR-026": "Fase 3, interfaz (pantalla de pago con datos de retiro)",
 }
 # Requisitos que hoy se verifican solo con prueba manual (ver docs/testing/test-plan.md).
 MANUAL = {"FR-001": "MT-01", "FR-015": "MT-05", "NFR-002": "MT-08"}
@@ -85,6 +88,8 @@ def parse_manual_results():
                 label = "✅ OK"
             elif low.startswith("falla"):
                 label = "❌ FALLA"
+            elif low.startswith("parcial"):
+                label = "🟡 Parcial"
             elif low.startswith("bloque"):
                 label = "⛔ Bloqueada"
             else:
@@ -216,7 +221,7 @@ def main():
         L.append(f"| {mt} | {name} | {label} |")
     done = sum(1 for v in manual.values() if v[0] in ("✅ OK", "❌ FALLA"))
     L.append("")
-    L.append(f"**Ejecutadas:** {done}/{len(manual)} · **OK:** {sum(1 for v in manual.values() if v[0] == '✅ OK')} · **Falla:** {sum(1 for v in manual.values() if v[0] == '❌ FALLA')} · **Bloqueadas:** {sum(1 for v in manual.values() if v[0] == '⛔ Bloqueada')}.")
+    L.append(f"**Ejecutadas:** {done}/{len(manual)} · **Parciales:** {sum(1 for v in manual.values() if v[0] == '🟡 Parcial')} · **OK:** {sum(1 for v in manual.values() if v[0] == '✅ OK')} · **Falla:** {sum(1 for v in manual.values() if v[0] == '❌ FALLA')} · **Bloqueadas:** {sum(1 for v in manual.values() if v[0] == '⛔ Bloqueada')}.")
     L.append("")
     L.append("## Detalle de casos ejecutados")
     L.append("")
