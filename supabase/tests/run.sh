@@ -24,4 +24,7 @@ fi
 
 "${psql_cmd[@]}" -q -f "$here/00_mock_supabase.sql"
 for f in "$root"/supabase/migrations/*.sql; do "${psql_cmd[@]}" -q -f "$f"; done
-"${psql_cmd[@]}" -f "$here/001_rls.sql" 2>&1 | grep -E "NOTICE|ERROR|PASARON|FALL" | sed 's/^psql:[^ ]* //'
+for t in "$here"/[0-9][0-9][0-9]_*.sql; do
+  echo "== $(basename "$t")"
+  "${psql_cmd[@]}" -f "$t" 2>&1 | grep -E "NOTICE|ERROR|PASARON|FALL" | sed 's/^psql:[^ ]* //'
+done

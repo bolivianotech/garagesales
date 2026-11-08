@@ -4,7 +4,9 @@ Proyecto: `garajesales` · ref `pfhgqoeobboriounehat` · URL `https://pfhgqoeobb
 
 La URL y la clave **publishable** (anon) son públicas por diseño y van en el frontend. La clave `service_role`, la contraseña de la base de datos y la llave AES del banco **nunca** van al repo ni al chat.
 
-## 1. Aplicar la migración (T9)
+## 1. Aplicar las migraciones (T9)
+Aplícalas **en orden** (`20261107000001_foundation.sql` primero y luego `20261108000001_products.sql`). Ya aplicaste la primera; para la Fase 2 ejecuta solo la segunda.
+
 Opción A — SQL Editor (la más rápida):
 1. Panel de Supabase → **SQL Editor** → New query.
 2. Pega el contenido de `supabase/migrations/20261107000001_foundation.sql` y pulsa **Run**.
