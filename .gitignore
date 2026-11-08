@@ -6,3 +6,13 @@ dist/
 supabase/.temp/
 .DS_Store
 *.pdf
+
+# Secretos y archivos temporales: NUNCA al repositorio
+~$*
+*.pem
+*.key
+.env.local
+docs/privado/
+*secret*.png
+*secret*.jpg
+supabase/.env
