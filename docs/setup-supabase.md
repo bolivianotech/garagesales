@@ -57,3 +57,19 @@ bash supabase/tests/run.sh         # RLS y auditoría (requiere binarios de Post
 
 ## Google (opcional, se puede dejar para después)
 El botón "Continuar con Google" está oculto (`VITE_ENABLE_GOOGLE=false`). Para activarlo hace falta crear credenciales OAuth en Google Cloud y pegarlas en Supabase → Authentication → Providers → Google. Sin eso, el registro con correo y contraseña funciona igual.
+
+## Enlace del correo de confirmación (error `localhost:3000`)
+Si al confirmar el correo el navegador va a `http://localhost:3000/#access_token=...` y muestra error, **la cuenta sí quedó confirmada**: Supabase usa por defecto `localhost:3000` como *Site URL*. Corrección:
+1. Supabase → **Authentication → URL Configuration → Site URL** = `https://garagesales.requenataniel.workers.dev`.
+2. En **Redirect URLs** agrega `https://garagesales.requenataniel.workers.dev/**` y `http://localhost:5173/**`.
+3. Entra a la app e ingresa con el correo y la contraseña.
+
+La app ya pide a Supabase volver a su propio dominio (`emailRedirectTo`), pero ese dominio debe estar permitido en la lista de Redirect URLs.
+
+## Quién puede registrarse y qué rol tiene
+- **Cualquier persona puede crear una cuenta** y queda como *comprador*: es necesario para poder comprar.
+- **Vendedor:** el usuario pide serlo desde "Mi cuenta" y el `admin` lo aprueba en el panel. **No se ejecuta SQL para vendedores.**
+- **`admin` y `finance_admin`:** solo se asignan con `bootstrap_staff_role` desde el SQL Editor (la función no es ejecutable desde la app).
+
+## Correos de Supabase (remitente y texto)
+Con el servicio de correo por defecto de Supabase, el remitente es `noreply@mail.app.supabase.io` y el texto viene en inglés. Para marca propia en español: **Authentication → Email Templates** (textos) y, para cambiar el remitente, un SMTP propio (Authentication → SMTP Settings). El servicio por defecto además tiene un límite bajo de correos por hora; para producción conviene SMTP propio.

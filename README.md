@@ -14,6 +14,8 @@ Marketplace de garage sales: los **vendedores** publican productos (foto, precio
 | [`docs/integraciones/banco-economico.md`](docs/integraciones/banco-economico.md) | Contrato de la API del banco y puntos a verificar |
 | [`docs/adr/`](docs/adr) | Decisiones de arquitectura (ADR) |
 | [`docs/testing/test-plan.md`](docs/testing/test-plan.md) | Plan de pruebas y casos manuales |
+| [`docs/testing/manual-test-guide.md`](docs/testing/manual-test-guide.md) | Guía paso a paso para ejecutar las pruebas manuales |
+| [`docs/testing/manual-results.md`](docs/testing/manual-results.md) | Registro de resultados de las pruebas manuales |
 | [`docs/testing/reports/latest.md`](docs/testing/reports/latest.md) | Último reporte de pruebas (resultados y cobertura por requisito) |
 | [`docs/open-questions.md`](docs/open-questions.md) | Preguntas abiertas que bloquean specs |
 | [`specs/`](specs) | Una carpeta por feature: `spec.md` → `plan.md` → `tasks.md` |
