@@ -6,7 +6,7 @@ Reglas que toda spec, plan y PR deben respetar.
 2. **Requisitos trazables.** Cada requisito tiene ID (`FR-`, `NFR-`) y cada ID debe tener al menos un test.
 3. **Secretos solo en servidor.** Credenciales del banco y service-role de Supabase jamás en frontend, repo ni logs.
 4. **El pago se confirma en servidor.** El cliente nunca marca un pedido como pagado; solo una Edge Function tras verificar con el banco.
-5. **Inventario consistente.** Nunca se vende más stock del existente (reserva atómica en base de datos).
+5. **Inventario consistente.** Nunca se entrega más stock del existente: el stock se descuenta de forma atómica al confirmar el pago y gana quien paga primero (ADR-0004).
 6. **Seguridad por defecto.** Row Level Security (RLS) activo en todas las tablas; un vendedor solo ve/edita lo suyo.
 7. **Mobile-first y offline-tolerante.** Diseñar para teléfono con conexión inestable (Bolivia): imágenes comprimidas, caché de catálogo.
 8. **Idioma:** documentación y UI en español (Bolivia); código e identificadores en inglés. Moneda: Bolivianos (BS), enteros en centavos.

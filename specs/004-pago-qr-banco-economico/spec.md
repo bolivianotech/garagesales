@@ -12,7 +12,7 @@ Generar un QR de uso único por pedido con el monto exacto (Σ precio × cantida
 - Como **vendedor** quiero que, al confirmarse el pago, el producto deje de estar disponible.
 
 ## Flujo
-1. Comprador confirma carrito → se crea el pedido y se reserva stock (10 min).
+1. Comprador confirma carrito → se crea el pedido (sin reservar stock).
 2. `create-qr` (Edge Function): obtiene token, calcula el total en servidor y llama `generateQR` con `singleUse=true`, `modifyAmount=false`, `currency=BOB`, `transactionId`=id del pedido, `description` con código de pedido y SKU/descripción corta de los ítems.
 3. Se guarda `qrId` y `qrImage`; la PWA muestra el QR y la cuenta regresiva.
 4. Confirmación: consulta de `statusQR` + aviso `notifyPaymentQR` (si está activo) + conciliación diaria con `paidQR/{fecha}`.
@@ -27,11 +27,11 @@ Generar un QR de uso único por pedido con el monto exacto (Σ precio × cantida
 - FR-034: Idempotencia por `qrId`: un QR confirma un pedido una sola vez; avisos y consultas repetidos no duplican ledger ni pickups.
 - FR-035: Se guardan en `payments`: `qrId`, `senderName`, `senderBankCode` (y nombre del banco por catálogo), `senderAccount` ofuscado, fecha/hora de pago, monto, `description` y la respuesta cruda.
 - FR-036: Conciliación diaria: `paidQR/{yyyyMMdd}` contra `payments`; pagos sin pedido o pedidos pagados que el banco no reporta generan alerta. Control contable adicional con `accounts/history` (saldo/ingresos vs ledger).
-- FR-037: Al pasar a `paid`, los ítems quedan vendidos: salen del catálogo y del inventario del vendedor y van a "Por entregar" (spec 007).
+- FR-037: Al pasar a `paid`, en una sola transacción se descuenta el stock, los ítems agotados salen del catálogo y van a "Por entregar" (spec 007). **Gana quien paga primero** (spec 003).
 - FR-038: El comprador ve el estado en vivo (Realtime): esperando → pagado / expirado.
 - FR-039: `MockProvider` con la misma interfaz para desarrollo y pruebas.
 - FR-039a: El pago confirmado genera asientos en `ledger` (spec 006).
-- FR-039b: **Pago tardío o carrera:** al expirar un pedido se llama `cancelQR`. Si el banco indica que ya fue pagado, el pedido se confirma. Si un pago llega con el stock ya liberado, se intenta re-reservar; si no es posible, queda en `review` para reembolso o decisión del admin. Nunca se pierde un pago.
+- FR-039b: **Pago tardío o carrera:** al vencer un pedido se llama `cancelQR`. Si el banco indica que ya fue pagado, o llega un pago de un pedido vencido, se confirma siempre que el monto coincida y el stock alcance. Si el stock ya no alcanza (otro pagó antes) o el monto no coincide, el pedido y el pago quedan en `review` para reembolso o decisión del admin. Nunca se pierde un pago.
 - FR-039c: Token del banco en caché, renovado ante 401; no se escribe en logs.
 - FR-039d: El endpoint de aviso va en una ruta con token secreto y rechaza peticiones sin él.
 - NFR-005: Pago visible al comprador < 30 s desde que el banco lo reporta (ajustar a límites del banco).

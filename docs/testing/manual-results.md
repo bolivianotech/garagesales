@@ -9,7 +9,7 @@ Los casos (pasos, precondiciones, resultado esperado) están en [`test-plan.md`]
 | MT-10 | El sitio carga y las rutas internas funcionan al recargar | OK | 2026-11-08 | Dueño del producto | |  |
 | MT-01 | Registro, confirmación de correo, ingreso y datos de perfil | OK | 2026-11-08 | Dueño del producto | |  |
 | MT-02 | Solicitud de vendedor y aprobación del admin | OK | 2026-11-08 | Dueño del producto | |  |
-| MT-04 | Subir producto con foto de ~4 MB y verlo en el catálogo | Pendiente |  | Dueño del producto | | El dueño informó "MT-04" sin resultado; falta confirmar si pasó (foto de ~4 MB visible en el catálogo con tamaño reducido). |
+| MT-04 | Subir producto con foto de ~4 MB y verlo en el catálogo | OK | 2026-11-08 | Dueño del producto | | Confirmado por el dueño en el chat. |
 | MT-06 | Cantidad 0 lo marca agotado; al reponer vuelve | OK | 2026-11-08 | Dueño del producto | |  |
 | MT-07 | Pausar y publicar | OK | 2026-11-08 | Dueño del producto | |  |
 | MT-05 | Carga rápida de 10 fotos | OK | 2026-11-08 | Dueño del producto | |  |
