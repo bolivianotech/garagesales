@@ -27,6 +27,7 @@ El QR de cobro del vendedor es un QR de **cualquier banco o entidad financiera d
 - FR-099: Roles: `admin` aprueba vendedores y ve reportes; `finance_admin` aprueba métodos de cobro y registra liquidaciones. Inicialmente el dueño usa dos cuentas de correo distintas, una por rol; la regla de cuatro ojos se aplica por cuenta y es configurable para cuando haya otra persona.
 - FR-099a: 2FA obligatorio para las cuentas `admin` y `finance_admin`; el `audit_log` registra la cuenta que actúa.
 - FR-090a: La foto del QR se guarda en almacenamiento privado (solo vendedor, `finance_admin`).
+- FR-100: **Limpieza de datos de prueba.** Existe un procedimiento (`supabase/maintenance/`) con vista previa de lo que borra, frase de confirmación obligatoria (sin ella no se borra nada) y opciones explícitas. Borra pedidos, pagos, productos, tiendas y, si se activa, cuentas no administrativas; **conserva** cuentas `admin` y `finance_admin`, configuración y catálogo de bancos; reinicia la numeración; deja una entrada `system.cleanup` en la auditoría. El reinicio de la auditoría solo ocurre con una opción explícita y la deja inmutable de nuevo. Las fotos se borran con un script aparte que usa la API de Storage.
 - NFR-012: Números de cuenta cifrados en reposo y enmascarados en pantalla (`****1234`), visibles completos solo al `finance_admin`.
 
 ## Criterios de aceptación
@@ -34,5 +35,6 @@ El QR de cobro del vendedor es un QR de **cualquier banco o entidad financiera d
 - **Dado** un intento de UPDATE o DELETE sobre un método de cobro, **cuando** se ejecuta con cualquier rol, **entonces** falla y queda registrado.
 - **Dado** un cambio propuesto, **cuando** lo aprueba la misma persona que lo registró, **entonces** se rechaza.
 - **Dado** un nuevo método aprobado hace menos de 24 h, **cuando** se intenta liquidar, **entonces** se bloquea hasta terminar el enfriamiento.
+- **Dado** que se ejecuta la limpieza sin la frase de confirmación, **cuando** corre, **entonces** se cancela y no se borra nada.
 - **Dado** que se altera una fila antigua del `audit_log`, **cuando** corre la verificación diaria, **entonces** se detecta la ruptura y se alerta.
 - **Dado** un QR a 7 días de vencer, **entonces** vendedor y admin reciben aviso.

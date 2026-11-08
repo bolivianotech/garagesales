@@ -73,6 +73,56 @@ def run_vitest():
         return code, out, cases
 
 
+def run_node_tests():
+    """Pruebas de los scripts de mantenimiento (node --test, salida TAP)."""
+    code, out = sh(["node", "--test", "--test-reporter=tap", "scripts/tests/cleanup-storage.test.mjs"])
+    cases = []
+    for line in out.splitlines():
+        m = re.match(r"^(not ok|ok) \d+ - (.*)$", line.strip())
+        if m:
+            cases.append((m.group(2), "PASS" if m.group(1) == "ok" else "FAIL", "cleanup-storage.test.mjs"))
+    return code, out, cases
+
+
+def run_e2e_smoke():
+    """Humo E2E (Playwright). Si no hay navegador disponible, se informa como NO EJECUTADO (no cuenta como falla)."""
+    e2e = ROOT / "e2e"
+    if not (e2e / "node_modules").exists():
+        return None, "", []
+    env_chrome = "/opt/pw-browsers/chromium"
+    import os
+    env = dict(os.environ)
+    if pathlib.Path(env_chrome).exists() and "PW_CHROMIUM" not in env:
+        env["PW_CHROMIUM"] = env_chrome
+    p = subprocess.run(["npx", "playwright", "test", "--grep", "@smoke", "--reporter=json"], cwd=e2e,
+                       capture_output=True, text=True, env=env)
+    cases = []
+    try:
+        data = json.loads(p.stdout)
+
+        def walk(suite):
+            for sp in suite.get("specs", []):
+                ok = all(t.get("status") in ("expected", "passed") for t in sp.get("tests", []))
+                cases.append((sp["title"], "PASS" if ok else "FAIL", "00-humo.spec.ts"))
+            for sub in suite.get("suites", []):
+                walk(sub)
+
+        for st in data.get("suites", []):
+            walk(st)
+    except Exception:
+        return p.returncode, p.stdout[-800:] + p.stderr[-800:], []
+    return p.returncode, "", cases
+
+
+def run_secret_checks():
+    c1, o1 = sh(["python3", "-I", "scripts/check_secrets.py", "--self-test"])
+    c2, o2 = sh(["python3", "-I", "scripts/check_secrets.py"])
+    return [
+        ("TC-SEC-01 FR-095 la autoprueba del escáner de secretos detecta llaves, JWT y claves privadas", "PASS" if c1 == 0 else "FAIL", "check_secrets.py"),
+        ("TC-SEC-02 el repositorio no contiene secretos detectables", "PASS" if c2 == 0 else "FAIL", "check_secrets.py"),
+    ], c1 == 0 and c2 == 0, (o1 + o2)
+
+
 def parse_manual_results():
     """Lee docs/testing/manual-results.md -> {MT-xx: (etiqueta, resultado_crudo)}."""
     f = ROOT / "docs" / "testing" / "manual-results.md"
@@ -122,6 +172,9 @@ def main():
 
     sql_code, sql_out, sql_suites = run_sql()
     ui_code, ui_out, ui_cases = run_vitest()
+    nd_code, nd_out, nd_cases = run_node_tests()
+    sec_cases, sec_ok, sec_out = run_secret_checks()
+    e2e_code, e2e_out, e2e_cases = run_e2e_smoke()
     tc_code, tc_out = sh(["npm", "run", "typecheck"], cwd=PWA)
     bd_code, bd_out = sh(["npm", "run", "build"], cwd=PWA)
 
@@ -139,10 +192,15 @@ def main():
         reqs = sorted(set(REQ_RE.findall(full)))
         rows.append((tid, reqs, desc, suite, res))
 
+    for full, res, suite in nd_cases + sec_cases + e2e_cases:
+        m = ID_RE.match(full) or re.match(r"^(E2E-\d+)\s+(.*)$", full)
+        tid, desc = (m.group(1), m.group(2)) if m else ("SIN-ID", full)
+        rows.append((tid, sorted(set(REQ_RE.findall(desc))), desc, suite, res))
+
     passed = sum(1 for r in rows if r[4] == "PASS")
     failed = sum(1 for r in rows if r[4] == "FAIL")
     no_id = sum(1 for r in rows if r[0] == "SIN-ID")
-    overall_ok = (sql_code == 0 and ui_code == 0 and tc_code == 0 and bd_code == 0 and failed == 0
+    overall_ok = (sql_code == 0 and nd_code == 0 and sec_ok and (e2e_code in (None, 0)) and ui_code == 0 and tc_code == 0 and bd_code == 0 and failed == 0
                   and all(s["finished"] for s in sql_suites.values()))
 
     reqs = parse_requirements()
@@ -173,6 +231,13 @@ def main():
         L.append(f"| Base de datos · `{suite}` | {'✅' if ok else '❌'} | {len(info['cases'])} casos OK |")
     ui_pass = sum(1 for c in ui_cases if c[1] == "PASS")
     L.append(f"| Interfaz · Vitest | {'✅' if ui_code == 0 else '❌'} | {ui_pass}/{len(ui_cases)} casos OK |")
+    nd_pass = sum(1 for c in nd_cases if c[1] == "PASS")
+    L.append(f"| Scripts · `cleanup-storage` (node --test) | {'✅' if nd_code == 0 else '❌'} | {nd_pass}/{len(nd_cases)} casos OK |")
+    if e2e_code is None:
+        L.append("| E2E · humo (Playwright) | ⏸ no ejecutado | Falta `npm install` en `e2e/` |")
+    else:
+        L.append(f"| E2E · humo (Playwright) | {'✅' if e2e_code == 0 else '❌'} | {sum(1 for c in e2e_cases if c[1] == 'PASS')}/{len(e2e_cases)} casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |")
+    L.append(f"| Seguridad · escáner de secretos | {'✅' if sec_ok else '❌'} | {sum(1 for c in sec_cases if c[1] == 'PASS')}/{len(sec_cases)} casos OK |")
     L.append(f"| Tipos · `tsc --noEmit` | {'✅' if tc_code == 0 else '❌'} | |")
     L.append(f"| Compilación · `vite build` | {'✅' if bd_code == 0 else '❌'} | |")
     L.append(f"| **Total de casos** | **{passed} OK / {failed} fallan** | {no_id} sin identificador |")
