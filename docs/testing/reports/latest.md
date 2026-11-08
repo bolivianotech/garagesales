@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-08 21:16
-- **Commit:** `1617e5a` · **Rama:** `claude/dreamy-faraday-ivzqi8`
+- **Fecha (UTC):** 2026-11-08 22:03
+- **Commit:** `c39debc` · **Rama:** `claude/dreamy-faraday-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -17,10 +17,14 @@
 | Base de datos · `002_products.sql` | ✅ | 31 casos OK |
 | Base de datos · `003_orders.sql` | ✅ | 60 casos OK |
 | Base de datos · `004_concurrency` | ✅ | 5 casos OK |
+| Base de datos · `005_cleanup` | ✅ | 13 casos OK |
 | Interfaz · Vitest | ✅ | 17/17 casos OK |
+| Scripts · `cleanup-storage` (node --test) | ✅ | 6/6 casos OK |
+| E2E · humo (Playwright) | ✅ | 5/5 casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |
+| Seguridad · escáner de secretos | ✅ | 2/2 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **137 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **163 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
@@ -62,6 +66,7 @@
 | FR-078 | 007 | — | ⏳ fase aún no implementada |
 | FR-083 | 007 | TC-003-43, TC-003-44, TC-003-45, TC-003-46, TC-003-47 | ✅ cubierto |
 | FR-084 | 007 | TC-003-58, TC-003-59, TC-003-60 | ✅ cubierto |
+| FR-085 | 007 | — | ⏳ fase aún no implementada |
 | FR-079 | 007 | TC-003-57 | ✅ cubierto |
 | FR-080 | 007 | — | ⏳ fase aún no implementada |
 | FR-081 | 007 | — | ⏳ fase aún no implementada |
@@ -72,17 +77,18 @@
 | FR-092 | 008 | — | ⏳ fase aún no implementada |
 | FR-093 | 008 | — | ⏳ fase aún no implementada |
 | FR-094 | 008 | — | ⏳ fase aún no implementada |
-| FR-095 | 008 | TC-001-20, TC-001-21, TC-001-22 | ✅ cubierto |
-| FR-096 | 008 | TC-001-23, TC-001-24 | ✅ cubierto |
+| FR-095 | 008 | TC-001-20, TC-001-21, TC-001-22, TC-005-13, TC-SEC-01 | ✅ cubierto |
+| FR-096 | 008 | TC-001-23, TC-001-24, TC-005-10, TC-005-12 | ✅ cubierto |
 | FR-097 | 008 | — | ⏳ fase aún no implementada |
 | FR-098 | 008 | — | ⏳ fase aún no implementada |
 | FR-099 | 008 | TC-001-16, TC-001-17, TC-001-18 | ✅ cubierto |
 | FR-099a | 008 | TC-001-19 | ✅ cubierto |
 | FR-090a | 008 | — | ⏳ fase aún no implementada |
+| FR-100 | 008 | TC-005-01, TC-005-02, TC-005-03, TC-005-04, TC-005-05, TC-005-06, TC-005-07, TC-005-09 | ✅ cubierto |
 | NFR-012 | 008 | — | ⏳ fase aún no implementada |
 
-**En alcance de lo implementado:** 30 requisitos · **con prueba automatizada:** 27 (90 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
-**Fuera de alcance por ahora:** 24 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
+**En alcance de lo implementado:** 31 requisitos · **con prueba automatizada:** 28 (90 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
+**Fuera de alcance por ahora:** 25 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
 
 ## Pruebas manuales (registro en `manual-results.md`)
 
@@ -225,6 +231,19 @@
 | TC-004-03 | NFR-004 | NFR-004 el stock termina en 0, nunca negativo | `004_concurrency` | ✅ PASS |
 | TC-004-04 | NFR-004 | NFR-004 solo 1 pedido queda en estado pagado | `004_concurrency` | ✅ PASS |
 | TC-004-05 | NFR-004 | NFR-004 se crea 1 solo retiro | `004_concurrency` | ✅ PASS |
+| TC-005-01 | FR-100 | FR-100 la limpieza sin la frase de confirmación se cancela | `005_cleanup` | ✅ PASS |
+| TC-005-02 | FR-100 | FR-100 la limpieza cancelada no borra ningún dato | `005_cleanup` | ✅ PASS |
+| TC-005-03 | FR-100 | FR-100 la limpieza borra pedidos, ítems, pagos y retiros | `005_cleanup` | ✅ PASS |
+| TC-005-04 | FR-100 | FR-100 la limpieza borra productos, fotos y tiendas | `005_cleanup` | ✅ PASS |
+| TC-005-05 | FR-100 | FR-100 la limpieza borra las cuentas que no son administrativas | `005_cleanup` | ✅ PASS |
+| TC-005-06 | FR-100 | FR-100 la limpieza conserva las cuentas administrativas | `005_cleanup` | ✅ PASS |
+| TC-005-07 | FR-100 | FR-100 la limpieza conserva la configuración y el catálogo de bancos | `005_cleanup` | ✅ PASS |
+| TC-005-08 | — | la numeración de pedidos vuelve a empezar | `005_cleanup` | ✅ PASS |
+| TC-005-09 | FR-100 | FR-100 la limpieza queda registrada en la auditoría | `005_cleanup` | ✅ PASS |
+| TC-005-10 | FR-096 | FR-096 la cadena de auditoría sigue íntegra tras la limpieza | `005_cleanup` | ✅ PASS |
+| TC-005-11 | — | con el reinicio activado, la auditoría queda solo con la marca de limpieza | `005_cleanup` | ✅ PASS |
+| TC-005-12 | FR-096 | FR-096 la cadena queda íntegra tras reiniciar la auditoría | `005_cleanup` | ✅ PASS |
+| TC-005-13 | FR-095 | FR-095 la auditoría vuelve a ser inmutable después del reinicio | `005_cleanup` | ✅ PASS |
 | TC-UI-01 | FR-010 | convierte texto a centavos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-02 | FR-010 | rechaza valores inválidos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-03 | FR-010 | formatea en bolivianos | `catalog.test.ts` | ✅ PASS |
@@ -242,3 +261,16 @@
 | TC-UI-15 | FR-002, FR-004, FR-005 | FR-004: solo seller vende, solo admin administra, solo finance_admin finanzas | `roles.test.ts` | ✅ PASS |
 | TC-UI-16 | FR-002, FR-004, FR-005 | FR-005: un usuario suspendido no accede a nada | `roles.test.ts` | ✅ PASS |
 | TC-UI-17 | FR-002, FR-004, FR-005 | FR-002: comprar exige nombre y teléfono | `roles.test.ts` | ✅ PASS |
+| TC-SCR-01 | — | sin --confirm solo simula y no borra nada | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SCR-02 | — | con la frase correcta borra todos los archivos, incluidas las carpetas anidadas | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SCR-03 | — | con una frase incorrecta se rechaza y no borra | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SCR-04 | — | sin credenciales en el entorno no hace nada | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SCR-05 | — | con una clave inválida falla sin borrar | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SCR-06 | — | maneja más de 100 archivos (paginación y borrado por lotes) | `cleanup-storage.test.mjs` | ✅ PASS |
+| TC-SEC-01 | FR-095 | FR-095 la autoprueba del escáner de secretos detecta llaves, JWT y claves privadas | `check_secrets.py` | ✅ PASS |
+| TC-SEC-02 | — | el repositorio no contiene secretos detectables | `check_secrets.py` | ✅ PASS |
+| E2E-01 | — | @smoke la aplicación carga y muestra el catálogo público | `00-humo.spec.ts` | ✅ PASS |
+| E2E-02 | — | @smoke las áreas privadas llevan a "Ingresar" sin sesión | `00-humo.spec.ts` | ✅ PASS |
+| E2E-03 | — | @smoke el formulario alterna entre ingresar y crear cuenta | `00-humo.spec.ts` | ✅ PASS |
+| E2E-04 | — | @smoke una dirección desconocida vuelve al inicio | `00-humo.spec.ts` | ✅ PASS |
+| E2E-05 | — | @smoke el botón de Google no se muestra hasta configurarlo | `00-humo.spec.ts` | ✅ PASS |
