@@ -21,7 +21,11 @@ export function Login() {
     const res =
       mode === 'login'
         ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password, options: { data: { name } } })
+        : await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { name }, emailRedirectTo: `${window.location.origin}/cuenta` },
+          })
     setBusy(false)
     if (res.error) setMsg(res.error.message)
     else if (mode === 'register' && !res.data.session) setMsg('Revisa tu correo para confirmar la cuenta.')
