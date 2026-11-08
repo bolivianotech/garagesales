@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-08 22:03
-- **Commit:** `c39debc` · **Rama:** `claude/dreamy-faraday-ivzqi8`
+- **Fecha (UTC):** 2026-11-08 22:19
+- **Commit:** `9c30970` · **Rama:** `claude/garagesales-limpia-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -21,10 +21,11 @@
 | Interfaz · Vitest | ✅ | 17/17 casos OK |
 | Scripts · `cleanup-storage` (node --test) | ✅ | 6/6 casos OK |
 | E2E · humo (Playwright) | ✅ | 5/5 casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |
+| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | ✅ | 38/38 casos OK; **no prueba el banco real** |
 | Seguridad · escáner de secretos | ✅ | 2/2 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **163 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **201 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
@@ -274,3 +275,41 @@
 | E2E-03 | — | @smoke el formulario alterna entre ingresar y crear cuenta | `00-humo.spec.ts` | ✅ PASS |
 | E2E-04 | — | @smoke una dirección desconocida vuelve al inicio | `00-humo.spec.ts` | ✅ PASS |
 | E2E-05 | — | @smoke el botón de Google no se muestra hasta configurarlo | `00-humo.spec.ts` | ✅ PASS |
+| AES-01 | — | el ejemplo PÚBLICO del manual del banco se descifra a "1234" | `qr-baneco-demo` | ✅ PASS |
+| AES-02 | — | cifrar y descifrar devuelve el texto original (incluye tildes) | `qr-baneco-demo` | ✅ PASS |
+| AES-03 | — | el resultado tiene el formato del banco: base64 de 16 bytes de IV + bloques de 16 | `qr-baneco-demo` | ✅ PASS |
+| AES-04 | — | cada cifrado usa un IV distinto | `qr-baneco-demo` | ✅ PASS |
+| AES-05 | — | una llave de largo incorrecto se rechaza con un mensaje claro | `qr-baneco-demo` | ✅ PASS |
+| AES-06 | — | con otra llave no se puede descifrar | `qr-baneco-demo` | ✅ PASS |
+| APP-01 | — | la página principal y la salud responden | `qr-baneco-demo` | ✅ PASS |
+| APP-02 | — | el catálogo trae 2 productos con precios del servidor | `qr-baneco-demo` | ✅ PASS |
+| APP-03 | — | un pedido de 2 productos genera un QR por el total y queda pendiente | `qr-baneco-demo` | ✅ PASS |
+| APP-04 | — | un pedido de 1 solo producto también funciona | `qr-baneco-demo` | ✅ PASS |
+| APP-05 | — | SEGURIDAD: el precio que mande el navegador se ignora | `qr-baneco-demo` | ✅ PASS |
+| APP-06 | — | se rechazan pedidos inválidos (vacío, 3 productos, cantidad 0 o 99, producto desconocido, repetido) | `qr-baneco-demo` | ✅ PASS |
+| APP-07 | — | el pago se confirma al consultar: pendiente → pagado, con nombre y banco del pagador | `qr-baneco-demo` | ✅ PASS |
+| APP-08 | — | consultar varias veces un pedido pagado no cambia nada (idempotente) | `qr-baneco-demo` | ✅ PASS |
+| APP-09 | — | el aviso del banco sin token o con token falso se rechaza | `qr-baneco-demo` | ✅ PASS |
+| APP-10 | — | SEGURIDAD: un aviso con el token correcto NO confirma un pago que el banco no reporta | `qr-baneco-demo` | ✅ PASS |
+| APP-11 | — | un aviso legítimo (el banco sí lo marcó pagado) confirma el pedido | `qr-baneco-demo` | ✅ PASS |
+| APP-12 | — | anular un pedido pendiente anula el QR; uno pagado no se puede anular | `qr-baneco-demo` | ✅ PASS |
+| APP-13 | — | SEGURIDAD: la vista pública del pedido no expone qrId ni datos internos | `qr-baneco-demo` | ✅ PASS |
+| APP-14 | — | un pedido que no existe o con id raro responde 404 sin romper el servidor | `qr-baneco-demo` | ✅ PASS |
+| APP-15 | — | un cuerpo JSON roto o gigante se rechaza | `qr-baneco-demo` | ✅ PASS |
+| APP-16 | — | las cabeceras de seguridad están presentes | `qr-baneco-demo` | ✅ PASS |
+| APP-17 | — | el aviso AUTOMÁTICO del banco confirma el pedido sin que nadie consulte | `qr-baneco-demo` | ✅ PASS |
+| BANCO-01 | — | autentica con el password cifrado y devuelve token | `qr-baneco-demo` | ✅ PASS |
+| BANCO-02 | — | con una contraseña incorrecta falla igual que el banco real: "Usuario no habilitado para uso de apis" | `qr-baneco-demo` | ✅ PASS |
+| BANCO-03 | — | una contraseña ya cifrada (como la del estudiante) también autentica | `qr-baneco-demo` | ✅ PASS |
+| BANCO-04 | — | genera un QR de uso único con monto fijo y devuelve qrId e imagen | `qr-baneco-demo` | ✅ PASS |
+| BANCO-05 | — | el banco rechaza una glosa de más de 100 caracteres (el cliente debe truncarla) | `qr-baneco-demo` | ✅ PASS |
+| BANCO-06 | — | statusQR: pendiente (0) y luego pagado (1) con datos del pagador | `qr-baneco-demo` | ✅ PASS |
+| BANCO-07 | — | se acepta tanto "statusQRCode" como "statusQrCode" (el manual trae ambas escrituras) | `qr-baneco-demo` | ✅ PASS |
+| BANCO-08 | — | anular un QR pendiente funciona; anular uno pagado se rechaza | `qr-baneco-demo` | ✅ PASS |
+| BANCO-09 | — | si el token vence (401) se vuelve a autenticar una vez y la operación sigue | `qr-baneco-demo` | ✅ PASS |
+| BANCO-10 | — | paidQR lista los pagos del día para conciliar | `qr-baneco-demo` | ✅ PASS |
+| DIN-01 | — | los centavos pasan al banco como decimal de máximo 2 decimales, sin errores de coma flotante | `qr-baneco-demo` | ✅ PASS |
+| DIN-02 | — | montos inválidos se rechazan | `qr-baneco-demo` | ✅ PASS |
+| DIN-03 | — | formato en bolivianos | `qr-baneco-demo` | ✅ PASS |
+| DIN-04 | — | la glosa nunca pasa de 100 caracteres y empieza por el código del pedido | `qr-baneco-demo` | ✅ PASS |
+| DIN-05 | — | la fecha de vencimiento es yyyy-MM-dd en hora de La Paz | `qr-baneco-demo` | ✅ PASS |
