@@ -104,7 +104,7 @@ npx supabase secrets set \
   CRON_SECRET=<token-aleatorio-largo>
 npx supabase secrets list     # solo nombres
 ```
-Generar tokens: `openssl rand -hex 32`. Los valores se escriben en la terminal, no en archivos del repositorio. La URL de producción **[VERIFICAR]** la entrega el banco.
+Para generar valores aleatorios largos usa `openssl rand -hex 32`. Los valores se escriben en la terminal, no en archivos del repositorio. La URL de producción **[VERIFICAR]** la entrega el banco.
 
 ## 4. Pantalla de pago (frontend)
 Ruta `/pedido/:id/pagar`:
