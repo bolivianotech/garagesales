@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-09 01:49
-- **Commit:** `ccdfe60` · **Rama:** `claude/garagesales-limpia-ivzqi8`
+- **Fecha (UTC):** 2026-11-09 03:27
+- **Commit:** `1bb3b8c` · **Rama:** `claude/garagesales-limpia-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -19,7 +19,7 @@
 | Base de datos · `006_payment_checks.sql` | ✅ | 13 casos OK |
 | Base de datos · `004_concurrency` | ✅ | 5 casos OK |
 | Base de datos · `005_cleanup` | ✅ | 13 casos OK |
-| Interfaz · Vitest | ✅ | 17/17 casos OK |
+| Interfaz · Vitest | ✅ | 21/21 casos OK |
 | Scripts · `cleanup-storage` (node --test) | ✅ | 6/6 casos OK |
 | E2E · humo (Playwright) | ✅ | 5/5 casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |
 | Edge Functions de cobro · `supabase/functions/_tests` (banco simulado, base en memoria) | ✅ | 39/39 casos OK; **no prueba el banco real ni Supabase real** |
@@ -27,7 +27,7 @@
 | Seguridad · escáner de secretos | ✅ | 2/2 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **265 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **269 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
@@ -45,13 +45,13 @@
 | FR-010 | 002 | TC-002-01, TC-002-04, TC-002-05, TC-002-06, TC-002-09, TC-002-10, TC-002-11, TC-002-12, TC-002-15, TC-UI-01, TC-UI-02, TC-UI-03, TC-UI-04, TC-UI-09, TC-UI-10, TC-UI-11, TC-UI-12, TC-UI-13 | ✅ cubierto |
 | FR-011 | 002 | TC-002-27, TC-002-31, TC-UI-05, TC-UI-06, TC-UI-07, TC-UI-08 | ✅ cubierto |
 | FR-012 | 002 | TC-002-03, TC-002-13, TC-002-14, TC-002-21 | ✅ cubierto |
-| FR-013 | 002 | TC-003-13 | ✅ cubierto |
+| FR-013 | 002 | TC-003-13, TC-UI-22 | ✅ cubierto |
 | FR-014 | 002 | — | ⏳ diferido a Fase 3 (ventas en el panel) |
 | NFR-002 | 002 | — | 🖐 prueba manual MT-08: ✅ OK |
 | NFR-003 | 002 | — | ⏳ diferido a Fase 5 (modo sin red) |
 | FR-020 | 003 | — | ⏳ diferido a Fase 3, interfaz (catálogo con filtros y stock en vivo) |
 | FR-021 | 003 | — | ⏳ diferido a Fase 3, interfaz (carrito) |
-| FR-022 | 003 | TC-003-01, TC-003-03, TC-003-04, TC-003-05, TC-003-06, TC-003-07, TC-003-08, TC-003-09, TC-003-10, TC-003-12, TC-003-16 | ✅ cubierto |
+| FR-022 | 003 | TC-003-01, TC-003-03, TC-003-04, TC-003-05, TC-003-06, TC-003-07, TC-003-08, TC-003-09, TC-003-10, TC-003-12, TC-003-16, TC-UI-20, TC-UI-21, TC-UI-22, TC-UI-23 | ✅ cubierto |
 | FR-023 | 003 | TC-003-39, TC-003-40 | ✅ cubierto |
 | FR-024 | 003 | TC-003-11 | ✅ cubierto |
 | FR-025 | 003 | TC-003-14, TC-003-15, TC-003-19 | ✅ cubierto |
@@ -278,6 +278,10 @@
 | TC-005-11 | — | con el reinicio activado, la auditoría queda solo con la marca de limpieza | `005_cleanup` | ✅ PASS |
 | TC-005-12 | FR-096 | FR-096 la cadena queda íntegra tras reiniciar la auditoría | `005_cleanup` | ✅ PASS |
 | TC-005-13 | FR-095 | FR-095 la auditoría vuelve a ser inmutable después del reinicio | `005_cleanup` | ✅ PASS |
+| TC-UI-20 | FR-022 | FR-022 agregar suma cantidades y respeta el stock | `cart.test.ts` | ✅ PASS |
+| TC-UI-21 | FR-022 | FR-022 cambiar cantidad a 0 quita la línea; quitar elimina | `cart.test.ts` | ✅ PASS |
+| TC-UI-22 | FR-013, FR-022 | FR-013 el total se calcula en centavos enteros | `cart.test.ts` | ✅ PASS |
+| TC-UI-23 | FR-022 | FR-022 el carrito no pasa de 30 líneas | `cart.test.ts` | ✅ PASS |
 | TC-UI-01 | FR-010 | convierte texto a centavos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-02 | FR-010 | rechaza valores inválidos | `catalog.test.ts` | ✅ PASS |
 | TC-UI-03 | FR-010 | formatea en bolivianos | `catalog.test.ts` | ✅ PASS |

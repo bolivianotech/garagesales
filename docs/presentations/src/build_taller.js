@@ -369,6 +369,67 @@ async function build() {
   })
   s.addNotes('Guía completa: docs/handbook/08-replicar-en-otro-proyecto.md, con prompts probados para pedirle ayuda al asistente de IA.')
 
+  // 14b. Tres caminos de confirmación
+  s = ns('CONTENIDO', 'Cobro en vivo')
+  s.addText('Tres caminos para confirmar un pago', { placeholder: 'title' })
+  const paths = [
+    ['FaMobileAlt', '1 · La pantalla pregunta', 'Cada 4 s consulta el estado del QR al banco (statusQR). Es lo que ve el comprador.', HEX.accent1],
+    ['FaBell', '2 · El banco avisa', 'Opcional. El aviso solo despierta la consulta: nunca se cree su contenido.', HEX.accent3],
+    ['FaClock', '3 · Revisión cada minuto', 'Lee la lista de pagados del día. Cubre al que cerró la pantalla.', HEX.accent4],
+  ]
+  for (let i = 0; i < paths.length; i++) {
+    const [ic, t1, t2, col] = paths[i]
+    const x = 0.6 + i * 4.1
+    card(s, x, 1.9, 3.9, 4.2, `Camino ${i + 1}`)
+    iconCircle(s, x + 1.4, 2.2, 1.1, col, `Círculo ${i + 1}`)
+    s.addImage({ data: await icon(ic, HEX.lt1), x: x + 1.7, y: 2.5, w: 0.5, h: 0.5, altText: t1, objectName: `Ícono camino ${i + 1}` })
+    text(s, t1, { x: x + 0.2, y: 3.6, w: 3.5, h: 0.6, fontSize: 22, bold: true, align: 'center', fontFace: THEME.headFontFace })
+    text(s, t2, { x: x + 0.3, y: 4.25, w: 3.3, h: 1.7, fontSize: 16, color: C.text2, align: 'center', valign: 'top' })
+  }
+  text(s, 'Los tres terminan en la MISMA función de la base de datos, que confirma una sola vez.', { x: 0.6, y: 6.3, w: 12.1, h: 0.5, fontSize: 18, bold: true, align: 'center' })
+  s.addNotes('Explica que no hay que registrar nada en el banco: la API tiene un endpoint para consultar el estado de cada QR (statusQR) y otro con los pagados del día (paidQR). El aviso del banco (notifyPaymentQR) es opcional. Código: supabase/functions/_shared/payments.ts. Garantía de "una sola vez": confirm_payment es idempotente y se probó con 20 pagos simultáneos.')
+
+  // 14c. Dónde vive cada secreto
+  s = ns('CONTENIDO', 'Cobro en vivo')
+  s.addText('Dónde vive cada secreto', { placeholder: 'title' })
+  const where = [
+    ['FaServer', 'Secretos de Supabase', 'Usuario, llave AES, cuenta, tokens. Los lee la Edge Function con Deno.env. Comando: supabase secrets set.', HEX.accent1],
+    ['FaLock', 'Vault de Supabase', 'El CRON_SECRET para el reloj de cada minuto. Se carga una vez desde el SQL Editor.', HEX.accent3],
+    ['FaCloud', 'Variables de Cloudflare', 'Solo las PÚBLICAS: URL y clave anónima (VITE_). Nunca la llave del banco.', HEX.accent4],
+  ]
+  for (let i = 0; i < where.length; i++) {
+    const [ic, t1, t2, col] = where[i]
+    const x = 0.6 + i * 4.1
+    card(s, x, 1.9, 3.9, 4.2, `Lugar ${i + 1}`)
+    iconCircle(s, x + 1.4, 2.2, 1.1, col, `Círculo lugar ${i + 1}`)
+    s.addImage({ data: await icon(ic, HEX.lt1), x: x + 1.7, y: 2.5, w: 0.5, h: 0.5, altText: t1, objectName: `Ícono lugar ${i + 1}` })
+    text(s, t1, { x: x + 0.2, y: 3.6, w: 3.5, h: 0.6, fontSize: 22, bold: true, align: 'center', fontFace: THEME.headFontFace })
+    text(s, t2, { x: x + 0.3, y: 4.25, w: 3.3, h: 1.7, fontSize: 16, color: C.text2, align: 'center', valign: 'top' })
+  }
+  text(s, 'Nunca: en el chat, en git, en capturas ni en el código. El código solo conoce los NOMBRES.', { x: 0.6, y: 6.3, w: 12.1, h: 0.5, fontSize: 18, bold: true, align: 'center' })
+  s.addNotes('Pregunta típica: "si ya está en el código, ¿para qué el CLI?". El código dice qué secreto leer (por nombre); el valor vive fuera del repositorio. Si el valor estuviera en el código, quedaría en git para siempre (como pasó con la llave AES expuesta). Guía: docs/guia-puesta-en-marcha.md.')
+
+  // 14d. Puesta en marcha
+  s = ns('CONTENIDO', 'Cobro en vivo')
+  s.addText('Puesta en marcha en 7 pasos', { placeholder: 'title' })
+  const go = [
+    ['Aplicar las migraciones (supabase db push)', HEX.accent1],
+    ['Cargar los secretos (supabase secrets set)', HEX.accent3],
+    ['Desplegar las 5 funciones (supabase functions deploy)', HEX.accent4],
+    ['Programar el reloj de cada minuto (setup_payment_cron)', HEX.accent2],
+    ['Variables públicas en Cloudflare y desplegar la web', HEX.accent6],
+    ['Primer cobro de Bs 1 en certificación', HEX.accent1],
+    ['Pasar a producción: cambiar URL, llave y usuario', HEX.accent3],
+  ]
+  go.forEach(([t, col], i) => {
+    const y = 1.6 + i * 0.74
+    card(s, 0.6, y, 12.1, 0.62, `Paso ${i + 1}`)
+    iconCircle(s, 0.8, y + 0.06, 0.5, col, `Número ${i + 1}`)
+    text(s, String(i + 1), { x: 0.8, y: y + 0.06, w: 0.5, h: 0.5, fontSize: 18, bold: true, color: C.background1, align: 'center', valign: 'middle', fontFace: THEME.headFontFace })
+    text(s, t, { x: 1.6, y, w: 10.9, h: 0.62, fontSize: 19, valign: 'middle' })
+  })
+  s.addNotes('Sigue docs/guia-puesta-en-marcha.md en vivo, con comandos listos para copiar (PowerShell). Termina con el primer cobro real en certificación: es la prueba que ninguna simulación reemplaza.')
+
   // 15. Qué falta
   s = ns('CONTENIDO', 'Estado real')
   s.addText('Lo que falta, sin maquillaje', { placeholder: 'title' })
@@ -376,8 +437,8 @@ async function build() {
     ['Cuentas, roles y auditoría', 'Hecho y probado', HEX.accent1],
     ['Catálogo del vendedor', 'Hecho y probado (7 pruebas manuales OK)', HEX.accent1],
     ['Pedidos y pagos (base de datos)', 'Hecho y probado en local', HEX.accent1],
-    ['Pantallas de compra y comprobante', 'Pendiente', HEX.accent4],
-    ['Cobro con QR del banco', 'Pendiente: el banco debe habilitar el usuario', HEX.accent2],
+    ['Pantallas de compra y comprobante', 'Hechas; falta probar con el banco', HEX.accent2],
+    ['Cobro con QR del banco', 'Escrito y probado con banco simulado', HEX.accent2],
     ['Liquidaciones y comisión 1 %', 'Pendiente', HEX.accent4],
   ]
   est.forEach(([t1, t2, col], i) => {

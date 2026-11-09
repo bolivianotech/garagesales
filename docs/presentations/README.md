@@ -1,6 +1,6 @@
 # Presentación del taller
 
-**`GarageSales-taller-fin-de-semana.pptx`** — 16 diapositivas (16:9) para una audiencia joven: del método SDD a una tienda con pago QR, con cifras reales del proyecto, errores reales y un plan de fin de semana. Cada diapositiva tiene **notas del orador**.
+**`GarageSales-taller-fin-de-semana.pptx`** — 19 diapositivas (16:9) para una audiencia joven: del método SDD a una tienda con pago QR, con cifras reales del proyecto, errores reales y un plan de fin de semana. Cada diapositiva tiene **notas del orador**.
 
 | # | Diapositiva | # | Diapositiva |
 |---|---|---|---|
@@ -11,7 +11,8 @@
 | 5 | Una spec por dentro | 13 | Un secreto en un repo público |
 | 6 | Herramientas gratuitas | 14 | Replícalo en 5 pasos |
 | 7 | Arquitectura | 15 | Lo que falta, sin maquillaje |
-| 8 | Cada rol ve solo lo suyo | 16 | Cierre |
+| 8 | Cada rol ve solo lo suyo | 14b–14d | Tres caminos de confirmación · Dónde vive cada secreto · Puesta en marcha en 7 pasos (guía: `docs/guia-puesta-en-marcha.md`) |
+| | | 16 | Cierre |
 
 ## Fotos
 La portada y el cierre tienen un **recuadro de foto** (clic → *Insertar imagen*). Mientras no pongas fotos, se ve un patrón QR decorativo. Qué fotos usar y de dónde sacarlas: [`guia-de-fotos.md`](guia-de-fotos.md). Las fotos reales **no vienen incluidas**: hay que agregarlas.

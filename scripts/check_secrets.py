@@ -22,7 +22,8 @@ IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".heic")
 PUBLIC_EXAMPLES = {"40A318B299F245C2B697176723088629"}
 # Carpetas con credenciales FICTICIAS a propósito (banco simulado y pruebas): aquí NO se aplica la regla de
 # "valor asignado a password/token", pero sí las de llaves hexadecimales, JWT y claves privadas.
-DEMO_PATHS = ("examples/qr-baneco-demo/",)
+DEMO_PATHS = ("examples/qr-baneco-demo/", "supabase/functions/_tests/")
+CODE_EXT = (".ts", ".tsx", ".js", ".mjs")
 PLACEHOLDER = re.compile(r"(?i)(\.\.\.|xxx|<|>|cambiar|tu-|tu_|ejemplo|example|placeholder|changeme|valor|\$\{|your)")
 
 RULES = [
@@ -58,6 +59,9 @@ def scan_text(name, text):
         for m in ASSIGN.finditer(line):
             var, val = m.group(1), m.group(2)
             if var.startswith("VITE_") or PLACEHOLDER.search(val) or val.startswith("process.env") or val.startswith("Deno.env"):
+                continue
+            # En código, un valor SIN comillas es una referencia (this.password, env.X, withToken), no un literal.
+            if name.endswith(CODE_EXT) and not re.search(r"[=:]\s*[\"']", m.group(0)) and re.fullmatch(r"[A-Za-z_$][\w$.?!]*[,;)]*", val):
                 continue
             if re.fullmatch(r"[A-Za-z_]+\(.*", val) or val.endswith(("(", "{")) or val.lower() in ("true", "false", "null", "undefined", "postgres"):
                 continue
@@ -99,10 +103,12 @@ def self_test():
         "h.md": "ejemplo público del manual: 40A318B299F245C2B697176723088629\n",
         "i.md": "otra llave: 40A318B299F245C2B697176723088630\n",
         "otra/app.mjs": "const passwordPlano = 'unaClaveReal12345'\n",
+        "ok/ref.ts": "this.password = o.passwordEncrypted\n",
+        "mal/ref.ts": "const tokenFijo = 'abcdefghijk12345'\n",
         "examples/qr-baneco-demo/ok.mjs": "const passwordPlano = 'clave-demo-123'\n",
         "examples/qr-baneco-demo/mal.mjs": "const llave = '" + "B7" * 16 + "'\n",
     }
-    expect_hits = {"a.env", "b.txt", "c.env", "g.txt", "i.md", "otra/app.mjs", "examples/qr-baneco-demo/mal.mjs"}
+    expect_hits = {"a.env", "b.txt", "c.env", "g.txt", "i.md", "otra/app.mjs", "mal/ref.ts", "examples/qr-baneco-demo/mal.mjs"}
     got = set()
     for name, text in fake.items():
         if scan_text(name, text):

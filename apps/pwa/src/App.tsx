@@ -8,10 +8,23 @@ import { Catalog } from './pages/Catalog'
 import { SellerDashboard } from './pages/SellerDashboard'
 import { ProductForm } from './pages/ProductForm'
 import { QuickUpload } from './pages/QuickUpload'
+import { Cart } from './pages/Cart'
+import { Pay } from './pages/Pay'
+import { MyOrders } from './pages/MyOrders'
+import { Receipt } from './pages/Receipt'
+import { SellerPickups } from './pages/SellerPickups'
+import { countItems, loadCart } from './lib/cart'
+import { useEffect, useState } from 'react'
 import { isConfigured } from './lib/supabase'
 
 export function App() {
   const { session } = useAuth()
+  const [items, setItems] = useState(() => countItems(loadCart()))
+  useEffect(() => {
+    const on = () => setItems(countItems(loadCart()))
+    window.addEventListener('cart-changed', on)
+    return () => window.removeEventListener('cart-changed', on)
+  }, [])
   return (
     <>
       <header className="bar">
@@ -19,6 +32,8 @@ export function App() {
           GarageSales
         </Link>
         <nav>
+          <Link to="/carrito">Carrito{items > 0 ? ` (${items})` : ''}</Link>
+          {session && <Link to="/mis-pedidos">Mis pedidos</Link>}
           <Link to={session ? '/cuenta' : '/ingresar'}>{session ? 'Mi cuenta' : 'Ingresar'}</Link>
         </nav>
       </header>
@@ -29,6 +44,11 @@ export function App() {
         <Routes>
           <Route path="/" element={<Catalog />} />
           <Route path="/ingresar" element={<Login />} />
+          <Route path="/carrito" element={<Cart />} />
+          <Route path="/comprobante/:token" element={<Receipt />} />
+          <Route path="/pagar/:id" element={<RequireRole area="account"><Pay /></RequireRole>} />
+          <Route path="/mis-pedidos" element={<RequireRole area="account"><MyOrders /></RequireRole>} />
+          <Route path="/vender/entregas" element={<RequireRole area="sell"><SellerPickups /></RequireRole>} />
           <Route
             path="/cuenta"
             element={

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { CATEGORIES, firstImage, type Product } from '../lib/products'
 import { formatBs } from '../lib/money'
+import { addLine, loadCart, saveCart } from '../lib/cart'
 
 /** Catálogo público básico (la búsqueda avanzada y el carrito llegan con la spec 003). */
 export function Catalog() {
@@ -10,6 +11,7 @@ export function Catalog() {
   const [q, setQ] = useState('')
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState<string | null>(null)
+  const [added, setAdded] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -67,6 +69,9 @@ export function Catalog() {
                 {p.stores?.name ?? ''}
                 {p.size ? ` · Talla ${p.size}` : ''}
               </span>
+              <button onClick={() => { saveCart(addLine(loadCart(), p.id, 1, p.stock)); setAdded(p.id); setTimeout(() => setAdded(null), 1200) }}>
+                {added === p.id ? 'Agregado ✓' : 'Agregar al carrito'}
+              </button>
             </article>
           )
         })}

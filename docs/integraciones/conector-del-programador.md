@@ -26,7 +26,7 @@ Se **adoptaron sus ideas** y se reescribieron como código propio en `supabase/f
 
 ## Hallazgos que se corrigieron o quedan abiertos
 - **Fecha del banco:** el banco usa hora de Bolivia (UTC-4). Pedir `paidQR` con la fecha UTC falla después de las 20:00 hora local. Corregido en las Edge Functions y en el demo (`hoyBolivia`). TC-BN-19.
-- **Contraseña:** el conector exige `BANECO_CLAVE`, pero el dueño indica que el usuario de certificación no tiene contraseña. El campo `password` sigue siendo obligatorio en la API. Se soportan `BANCO_ECONOMICO_PASSWORD_FROM=vacio|usuario`, **sin confirmar cuál acepta el banco**: pregunta abierta (docs/open-questions.md).
+- **Contraseña:** el conector exige `BANECO_CLAVE`, pero el dueño indica que el usuario de certificación no tiene contraseña. El campo `password` sigue siendo obligatorio en la API. Se soportan los valores `vacio` y `usuario` en `BANCO_ECONOMICO_PASSWORD_FROM`, **sin confirmar cuál acepta el banco**: pregunta abierta (docs/open-questions.md).
 - **"Probado en producción"** (afirmación del programador): no verificada por nosotros.
 
 ## Lo que NO está verificado
