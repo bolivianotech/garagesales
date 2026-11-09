@@ -16,7 +16,7 @@ export class Bank {
   constructor({ baseUrl, usuario, aesKey, passwordPlano, passwordCifrado, cuentaAbono, fetchFn = fetch }) {
     Object.assign(this, { baseUrl, usuario, aesKey, cuentaAbono, fetchFn })
     // Si ya tienes la contraseña cifrada se usa tal cual; si no, se cifra con la llave AES.
-    this.passwordCifrado = passwordCifrado || cifrar(passwordPlano, aesKey)
+    this.passwordCifrado = passwordCifrado || cifrar(passwordPlano ?? '', aesKey)
     this._token = null
   }
 

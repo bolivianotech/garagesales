@@ -16,7 +16,7 @@ Sirve para **demostrar que la integración con la API del banco funciona** y com
 ```bash
 node --version          # 20 o superior
 npm run verificar       # prueba automática completa en modo simulado
-npm test                # 38 pruebas
+npm test                # 49 pruebas
 npm run mock            # abre http://localhost:3000 con un banco SIMULADO
 ```
 
@@ -26,6 +26,7 @@ En modo simulado el QR **no se puede escanear**; el botón **Simular pago** reem
 
 ```bash
 cp .env.example .env    # (Windows: copy .env.example .env)  → completa tus datos
+npm run diagnosticar-password -- --cifrado=<valor>   # si no tienes contraseña: qué se cifra (GUIA 6.0)
 npm run probar-aes                          # cifrado compatible con el banco
 npm run verificar:real -- --solo-crear      # genera un QR real y guarda la imagen en salida/
 npm run verificar:real -- --items=2         # QR de 2 productos y espera tu pago

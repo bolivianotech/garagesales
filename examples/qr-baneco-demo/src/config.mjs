@@ -26,6 +26,8 @@ export function leerConfig(env = process.env) {
     aesKey: env.BANK_AES_KEY || '',
     passwordPlano: env.BANK_PASSWORD_PLAIN || '',
     passwordCifrado: env.BANK_PASSWORD_ENCRYPTED || '',
+    // Qué se cifra como "password": plain (BANK_PASSWORD_PLAIN) · usuario (se cifra el propio usuario) · vacio (se cifra una cadena vacía)
+    passwordDe: (env.BANK_PASSWORD_FROM || '').toLowerCase(),
     cuentaAbono: env.BANK_ACCOUNT_CREDIT || '',
     tokenAviso: env.BANK_NOTIFY_TOKEN || '',
     precios: [Number(env.DEMO_PRICE_1 || 0.01), Number(env.DEMO_PRICE_2 || 0.01)],
@@ -35,7 +37,11 @@ export function leerConfig(env = process.env) {
     if (!cfg.baseUrl) faltan.push('BANK_BASE_URL')
     if (!cfg.usuario) faltan.push('BANK_USERNAME')
     if (!cfg.aesKey) faltan.push('BANK_AES_KEY')
-    if (!cfg.passwordPlano && !cfg.passwordCifrado) faltan.push('BANK_PASSWORD_PLAIN o BANK_PASSWORD_ENCRYPTED')
+    if (cfg.passwordDe && !['plain', 'usuario', 'vacio'].includes(cfg.passwordDe)) throw new Error('BANK_PASSWORD_FROM debe ser "usuario", "vacio" o "plain".')
+    if (cfg.passwordDe === 'usuario') cfg.passwordPlano = cfg.usuario
+    if (cfg.passwordDe === 'vacio') cfg.passwordPlano = ''
+    const sinPassword = !cfg.passwordPlano && !cfg.passwordCifrado && !['vacio'].includes(cfg.passwordDe)
+    if (sinPassword) faltan.push('BANK_PASSWORD_PLAIN, BANK_PASSWORD_ENCRYPTED o BANK_PASSWORD_FROM (usuario | vacio)')
     if (!cfg.cuentaAbono) faltan.push('BANK_ACCOUNT_CREDIT')
     if (faltan.length) throw new Error('Faltan variables en .env para el modo real: ' + faltan.join(', '))
   }

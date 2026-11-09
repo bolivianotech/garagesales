@@ -11,6 +11,7 @@
     "test": "node --test",
     "verificar": "node scripts/verificar-mock.mjs",
     "verificar:real": "node scripts/verificar-real.mjs",
-    "probar-aes": "node scripts/probar-aes.mjs"
+    "probar-aes": "node scripts/probar-aes.mjs",
+    "diagnosticar-password": "node scripts/diagnosticar-password.mjs"
   }
 }

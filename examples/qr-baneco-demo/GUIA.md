@@ -1,7 +1,7 @@
 # Guía completa: integración del QR del Banco Económico (proyecto demo)
 
 > **Para quién:** el programador que implementará el cobro con QR. No necesita acceso al repositorio principal del negocio.
-> **Estado verificado hoy:** cifrado AES contra el ejemplo público del manual ✔ · cliente del banco y aplicación contra un **banco simulado** ✔ (38 pruebas) · pantalla probada en navegador ✔.
+> **Estado verificado hoy:** cifrado AES contra el ejemplo público del manual ✔ · cliente del banco y aplicación contra un **banco simulado** ✔ (49 pruebas) · pantalla probada en navegador ✔.
 > **No verificado todavía:** nada contra el **banco real**. Ese es el objetivo de la sección 6.
 
 ## Índice
@@ -46,7 +46,7 @@ Decisiones de diseño que importan:
 | Dato | Para qué | Cómo se guarda |
 |---|---|---|
 | Usuario de API (ej. `A…`) | Autenticarse | `.env` → `BANK_USERNAME` |
-| Contraseña de API (en claro o ya cifrada) | Autenticarse | `.env` → `BANK_PASSWORD_PLAIN` o `BANK_PASSWORD_ENCRYPTED` |
+| Contraseña de API, **si existe** (en claro o ya cifrada) | Autenticarse | `.env` → `BANK_PASSWORD_PLAIN`, `BANK_PASSWORD_ENCRYPTED` o `BANK_PASSWORD_FROM` (sección 6.0) |
 | Llave AES de **certificación** (32 caracteres) | Cifrar contraseña y cuenta | `.env` → `BANK_AES_KEY` |
 | Cuenta de abono de **pruebas** | Recibe los cobros de prueba | `.env` → `BANK_ACCOUNT_CREDIT` |
 | URL de certificación | Dónde llamar | `.env` → `BANK_BASE_URL` |
@@ -75,13 +75,13 @@ Decisiones de diseño que importan:
 | `src/mock-bank.mjs` | Banco **simulado** que imita los endpoints del manual |
 | `public/index.html` | Pantalla: productos → QR → confirmación |
 | `scripts/` | `verificar-mock`, `verificar-real`, `probar-aes` |
-| `test/` | 38 pruebas automáticas |
+| `test/` | 49 pruebas automáticas |
 
 ## 4. Paso 1: correr todo en modo simulado
 
 ```bash
 npm run verificar       # debe terminar con: TODO CORRE NORMALMENTE (modo simulado)
-npm test                # # pass 38 · # fail 0
+npm test                # # pass 49 · # fail 0
 npm run mock            # http://localhost:3000
 ```
 En la pantalla: marca 1 o 2 productos → **Generar QR de pago** → **Simular pago** → aparece **✅ Pago confirmado** con el nombre del pagador.
@@ -170,7 +170,31 @@ Así un atacante que adivine la URL no puede "marcar como pagado" un pedido (pru
 
 ## 6. Paso 2: pasar al banco real (certificación)
 
-**Requisitos:** usuario de API **habilitado** en certificación, llave AES de certificación, cuenta de abono de pruebas, y saber si `password` va en claro o ya cifrado.
+### 6.0 Si tu usuario "no tiene contraseña"
+
+El manual exige el campo `password` **cifrado**. Si el banco no te dio ninguna contraseña, lo más probable es que lo que se cifra sea una **cadena vacía** o tu propio **usuario**. No lo sabemos con certeza y **no se debe adivinar a ciegas** (un usuario puede bloquearse por intentos fallidos). Hazlo en este orden:
+
+1. **Si ya existe una petición que funciona** (Hoppscotch, Postman o el sistema de otra persona), copia el valor del campo `password` (cifrado) y ejecuta, con la llave en tu `.env`:
+   ```bash
+   npm run diagnosticar-password -- --cifrado=<valor del campo password>
+   ```
+   El script **no muestra el texto**; solo dice si está vacío, si es igual a tu usuario o si es un valor propio, y qué variable poner en `.env`. Ejemplo de salida:
+   ```
+   ✔ Se pudo descifrar con tu llave: el formato de cifrado coincide con el del banco.
+   El "password" cifrado contiene:
+     • Largo: 0 carácter(es)
+     • Está vacío: SÍ  → usa BANK_PASSWORD_FROM=vacio
+   ```
+   Esto además confirma, con tu llave real, que el cifrado de esta guía coincide con el del banco.
+2. **Pon la variante que indique** en `.env` (`BANK_PASSWORD_FROM=vacio`, `BANK_PASSWORD_FROM=usuario`, `BANK_PASSWORD_PLAIN=...` o `BANK_PASSWORD_ENCRYPTED=...`).
+3. **Si no hay ninguna petición de referencia**, prueba como máximo **dos variantes, una llamada cada una**: primero `BANK_PASSWORD_FROM=vacio` y luego `BANK_PASSWORD_FROM=usuario`, con
+   ```bash
+   npm run verificar:real -- --solo-crear
+   ```
+   Si recibes `[404] Usuario no habilitado para uso de apis`, **no concluyas** que la variante es mala: ese mensaje también aparece cuando el banco aún no habilitó el usuario, y no sabemos si distingue una contraseña incorrecta. Si las dos variantes fallan, **para** y consulta al banco o a quien ya integró el QR.
+4. Cuando obtengas un token (`✔ Autenticación: el banco entregó un token`), anota qué variante funcionó y sigue con los pasos 2 a 6.
+
+**Requisitos:** usuario de API **habilitado** en certificación, llave AES de certificación, **cuenta de abono de pruebas** (`BANK_ACCOUNT_CREDIT`) y saber qué se cifra como `password` (6.0).
 
 1. **Crear `.env`** (`cp .env.example .env`) y poner `BANK_MODE=real` más los datos de la sección 2.
 2. **Comprobar el cifrado** (usa los endpoints `encrypt`/`decrypt` del banco, que reciben la llave en la URL: **solo con la llave de certificación**):
@@ -215,7 +239,7 @@ Para dar por demostrada la integración, el programador entrega **capturas o el 
 
 | # | Prueba | Evidencia esperada | ¿Listo? |
 |---|---|---|---|
-| A | `npm test` | `# pass 38 · # fail 0` | ☐ |
+| A | `npm test` | `# pass 49 · # fail 0` | ☐ |
 | B | `npm run verificar` | "TODO CORRE NORMALMENTE (modo simulado)" | ☐ |
 | C | `npm run probar-aes` | "Cifrado compatible con el banco" | ☐ |
 | D | `verificar:real -- --solo-crear` | QR guardado y escaneable, con monto y glosa correctos | ☐ |
@@ -263,7 +287,7 @@ Si hay **existencias limitadas** (una sola unidad), dos personas pueden pagar el
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
-| `[404] Usuario no habilitado para uso de apis` | El usuario no está habilitado en ese ambiente | Pedir al banco la habilitación; no es un error de código |
+| `[404] Usuario no habilitado para uso de apis` | Usuario no habilitado en ese ambiente, **o** valor de `password` incorrecto (no se sabe si el banco distingue) | Confirmar la habilitación con el banco; usar `diagnosticar-password` (sección 6.0) |
 | `La llave AES debe tener exactamente 32 caracteres` | Llave con espacios, comillas o de otro largo | Revisar `.env`: sin comillas ni espacios; 32 caracteres exactos |
 | `accountCredit` inválido / error al generar el QR | Cuenta mal escrita o llave AES distinta a la del ambiente | Verificar cuenta y llave; correr `probar-aes` |
 | `amount` rechazado | Más de 2 decimales o ≤ 0 | Usar `aMontoBanco(centavos)`; trabajar en centavos enteros |
@@ -275,7 +299,7 @@ Si hay **existencias limitadas** (una sola unidad), dos personas pueden pagar el
 
 ## 11. Pruebas y resultados
 
-`npm test` ejecuta **38 casos** (todos pasan al momento de escribir esta guía):
+`npm test` ejecuta **49 casos** (todos pasan al momento de escribir esta guía):
 
 | Archivo | Casos | Qué cubre |
 |---|---|---|
@@ -283,6 +307,7 @@ Si hay **existencias limitadas** (una sola unidad), dos personas pueden pagar el
 | `test/dinero.test.mjs` | 5 | Centavos ↔ decimales, formato, glosa de 100, fecha en La Paz |
 | `test/bank.test.mjs` | 10 | Autenticación (ok, fallo, password ya cifrado), QR, glosa larga, estados, casing, anular, token vencido, conciliación |
 | `test/app.test.mjs` | 17 | API completa, seguridad, aviso falso/legítimo/automático, anulación |
+| `test/config.test.mjs` | 11 | Configuración, password vacío o igual al usuario, diagnóstico sin mostrar secretos |
 
 **Qué NO cubren:** el banco real (la simulación imita el manual, no al banco), un QR escaneable real, ni la carga de muchos usuarios. Por eso existe la sección 6 y la lista de aceptación.
 
