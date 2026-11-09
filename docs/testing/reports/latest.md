@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-08 22:19
-- **Commit:** `9c30970` · **Rama:** `claude/garagesales-limpia-ivzqi8`
+- **Fecha (UTC):** 2026-11-09 00:59
+- **Commit:** `7f5b197` · **Rama:** `claude/garagesales-limpia-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -21,11 +21,11 @@
 | Interfaz · Vitest | ✅ | 17/17 casos OK |
 | Scripts · `cleanup-storage` (node --test) | ✅ | 6/6 casos OK |
 | E2E · humo (Playwright) | ✅ | 5/5 casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |
-| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | ✅ | 38/38 casos OK; **no prueba el banco real** |
+| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | ✅ | 49/49 casos OK; **no prueba el banco real** |
 | Seguridad · escáner de secretos | ✅ | 2/2 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **201 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **212 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
@@ -308,6 +308,17 @@
 | BANCO-08 | — | anular un QR pendiente funciona; anular uno pagado se rechaza | `qr-baneco-demo` | ✅ PASS |
 | BANCO-09 | — | si el token vence (401) se vuelve a autenticar una vez y la operación sigue | `qr-baneco-demo` | ✅ PASS |
 | BANCO-10 | — | paidQR lista los pagos del día para conciliar | `qr-baneco-demo` | ✅ PASS |
+| CFG-01 | — | modo real sin ninguna forma de password se rechaza con un mensaje que explica las opciones | `qr-baneco-demo` | ✅ PASS |
+| CFG-02 | — | BANK_PASSWORD_FROM=vacio es válido y cifra una cadena vacía | `qr-baneco-demo` | ✅ PASS |
+| CFG-03 | — | BANK_PASSWORD_FROM=usuario cifra el propio usuario | `qr-baneco-demo` | ✅ PASS |
+| CFG-04 | — | un valor desconocido en BANK_PASSWORD_FROM se rechaza | `qr-baneco-demo` | ✅ PASS |
+| CFG-05 | — | el modo simulado no exige credenciales | `qr-baneco-demo` | ✅ PASS |
+| CFG-06 | — | el banco autentica cuando lo que se cifra es una cadena vacía (usuario sin contraseña) | `qr-baneco-demo` | ✅ PASS |
+| CFG-07 | — | el banco autentica cuando lo que se cifra es el propio usuario | `qr-baneco-demo` | ✅ PASS |
+| CFG-08 | — | el diagnóstico reconoce un password vacío sin mostrar nada | `qr-baneco-demo` | ✅ PASS |
+| CFG-09 | — | el diagnóstico reconoce que el password es el usuario | `qr-baneco-demo` | ✅ PASS |
+| CFG-10 | — | SEGURIDAD: el diagnóstico NO imprime el texto del password salvo con --mostrar | `qr-baneco-demo` | ✅ PASS |
+| CFG-11 | — | el diagnóstico avisa claro si la llave no corresponde | `qr-baneco-demo` | ✅ PASS |
 | DIN-01 | — | los centavos pasan al banco como decimal de máximo 2 decimales, sin errores de coma flotante | `qr-baneco-demo` | ✅ PASS |
 | DIN-02 | — | montos inválidos se rechazan | `qr-baneco-demo` | ✅ PASS |
 | DIN-03 | — | formato en bolivianos | `qr-baneco-demo` | ✅ PASS |
