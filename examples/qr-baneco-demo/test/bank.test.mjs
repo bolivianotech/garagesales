@@ -2,7 +2,7 @@ import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { Bank, BankError } from '../src/bank.mjs'
 import { crearBancoSimulado } from '../src/mock-bank.mjs'
-import { fechaVencimiento } from '../src/dinero.mjs'
+import { fechaVencimiento, hoyBolivia } from '../src/dinero.mjs'
 
 const LLAVE = 'demo-llave-aes-de-32-caracteres!'
 let banco, url, bank
@@ -73,7 +73,7 @@ test('BANCO-09 si el token vence (401) se vuelve a autenticar una vez y la opera
 })
 test('BANCO-10 paidQR lista los pagos del día para conciliar', async () => {
   const { qrId } = await bank.generateQR(qrBase()); banco.pagar(qrId)
-  const hoy = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const hoy = hoyBolivia()
   const lista = await bank.paidQR(hoy)
   assert.ok(lista.some((p) => p.qrId === qrId))
 })

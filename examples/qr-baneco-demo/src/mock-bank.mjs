@@ -5,12 +5,13 @@ import http from 'node:http'
 import crypto from 'node:crypto'
 import { descifrar } from './aes.mjs'
 import { pngSimulado } from './png.mjs'
+import { hoyBolivia } from './dinero.mjs'
 
 export function crearBancoSimulado({ aesKey, usuario, passwordPlano, avisoUrl = null, avisoToken = null }) {
   const tokens = new Set()
   const qrs = new Map()
   let invalidarTokenUnaVez = false
-  const hoy = () => new Date().toISOString().slice(0, 10)
+  const hoy = () => hoyBolivia().replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3')
 
   // El comprador paga desde su app bancaria: el QR queda pagado y el banco AVISA al comercio (si hay URL registrada).
   function pagarQr(qrId, datos = {}) {
@@ -18,7 +19,7 @@ export function crearBancoSimulado({ aesKey, usuario, passwordPlano, avisoUrl = 
     if (!q) throw new Error('QR no existe')
     if (q.estado === 1 && q.singleUse) throw new Error('QR ya pagado')
     q.estado = 1
-    q.pago = { qrId, transactionId: String(Math.floor(1e6 + Math.random() * 9e6)), paymentDate: hoy() + 'T00:00:00', paymentTime: new Date().toISOString().slice(11, 19),
+    q.pago = { qrId, transactionId: String(Math.floor(1e6 + Math.random() * 9e6)), paymentDate: hoy() + 'T00:00:00', paymentTime: new Date(Date.now() - 4 * 3600_000).toISOString().slice(11, 19),
       currency: q.currency, amount: q.amount, senderBankCode: datos.senderBankCode || '1016', senderName: datos.senderName || 'PEDRO PEREZ', senderDocumentId: '0', senderAccount: '******1913', description: q.description, branchCode: q.branchCode }
     if (avisoUrl) {
       fetch(avisoUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + avisoToken }, body: JSON.stringify({ payment: q.pago }) }).catch(() => {})

@@ -39,6 +39,7 @@
 | Q33 | El estudiante que integró QR Conecta en 2 sistemas puede aclarar: qué lleva `password`, modo AES/IV/relleno, ambiente y usuario que usó. Compartir **solo explicación**, nunca llaves. | Fase 4 |
 | Q34 | Confirmar el mínimo de pago por QR (¿Bs 0,01?) para los UAT. | UAT |
 | Q35 | Foto del comprobante del comprador (FR-085): ¿obligatoria u opcional? Propuesta: opcional, hasta 3 imágenes. | E2 |
+| Q36 | Contraseña del usuario de certificación: el dueño dice que no tiene, pero `password` es obligatorio en `authenticate`. ¿El banco acepta cadena vacía o el propio usuario cifrado? Probar con `diagnosticar-password` y confirmar con el banco. | E1 |
 
 ## Resueltas en esta ronda
 - **Q16:** proyecto Supabase `garajesales` creado (ref `pfhgqoeobboriounehat`).

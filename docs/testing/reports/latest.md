@@ -2,8 +2,8 @@
 
 > Generado por `scripts/test_report.py`. No editar a mano: se regenera en cada ejecución.
 
-- **Fecha (UTC):** 2026-11-09 00:59
-- **Commit:** `7f5b197` · **Rama:** `claude/garagesales-limpia-ivzqi8`
+- **Fecha (UTC):** 2026-11-09 01:49
+- **Commit:** `ccdfe60` · **Rama:** `claude/garagesales-limpia-ivzqi8`
 - **Entorno:** PostgreSQL 16 (esquema de Supabase simulado: `supabase/tests/00_mock_supabase.sql`), Node v22.23.4
 - **Resultado global:** ✅ APROBADO
 
@@ -16,16 +16,18 @@
 | Base de datos · `001_rls.sql` | ✅ | 24 casos OK |
 | Base de datos · `002_products.sql` | ✅ | 31 casos OK |
 | Base de datos · `003_orders.sql` | ✅ | 60 casos OK |
+| Base de datos · `006_payment_checks.sql` | ✅ | 13 casos OK |
 | Base de datos · `004_concurrency` | ✅ | 5 casos OK |
 | Base de datos · `005_cleanup` | ✅ | 13 casos OK |
 | Interfaz · Vitest | ✅ | 17/17 casos OK |
 | Scripts · `cleanup-storage` (node --test) | ✅ | 6/6 casos OK |
 | E2E · humo (Playwright) | ✅ | 5/5 casos OK; `@live` y `@full` no se ejecutan aquí (ver `docs/testing/e2e-plan.md`) |
-| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | ✅ | 49/49 casos OK; **no prueba el banco real** |
+| Edge Functions de cobro · `supabase/functions/_tests` (banco simulado, base en memoria) | ✅ | 39/39 casos OK; **no prueba el banco real ni Supabase real** |
+| Demo QR del banco · `examples/qr-baneco-demo` (banco simulado) | ✅ | 50/50 casos OK; **no prueba el banco real** |
 | Seguridad · escáner de secretos | ✅ | 2/2 casos OK |
 | Tipos · `tsc --noEmit` | ✅ | |
 | Compilación · `vite build` | ✅ | |
-| **Total de casos** | **212 OK / 0 fallan** | 0 sin identificador |
+| **Total de casos** | **265 OK / 0 fallan** | 0 sin identificador |
 
 ## Cobertura por requisito (specs aprobadas)
 
@@ -55,7 +57,25 @@
 | FR-025 | 003 | TC-003-14, TC-003-15, TC-003-19 | ✅ cubierto |
 | FR-026 | 003 | — | ⏳ diferido a Fase 3, interfaz (pantalla de pago con datos de retiro) |
 | FR-023a | 003 | TC-003-32, TC-003-33 | ✅ cubierto |
-| NFR-004 | 003 | TC-003-31, TC-003-32, TC-003-33, TC-003-34, TC-004-01, TC-004-02, TC-004-03, TC-004-04, TC-004-05 | ✅ cubierto |
+| NFR-004 | 003 | TC-003-31, TC-003-32, TC-003-33, TC-003-34, TC-004-01, TC-004-02, TC-004-03, TC-004-04, TC-004-05, TC-BN-20, TC-HTTP-01, TC-HTTP-02, TC-HTTP-03, TC-HTTP-04, TC-HTTP-05 | ✅ cubierto |
+| FR-030 | 004 | — | ⚠️ sin prueba |
+| FR-031 | 004 | TC-006-11, TC-006-12, TC-006-13, TC-BN-01, TC-BN-02, TC-BN-03, TC-BN-04, TC-BN-08, TC-BN-09, TC-BN-10, TC-BN-11, TC-PAY-01, TC-PAY-02, TC-PAY-03 | ✅ cubierto |
+| FR-032 | 004 | TC-006-01, TC-006-05, TC-006-07, TC-006-08, TC-BN-12, TC-BN-14, TC-BN-15, TC-BN-16, TC-BN-17, TC-PAY-04, TC-PAY-06, TC-PAY-08, TC-PAY-09 | ✅ cubierto |
+| FR-033 | 004 | TC-003-20, TC-003-21, TC-003-22, TC-003-23, TC-PAY-10, TC-PAY-13 | ✅ cubierto |
+| FR-034 | 004 | TC-003-28, TC-003-29, TC-006-10, TC-PAY-07 | ✅ cubierto |
+| FR-035 | 004 | TC-003-30 | ✅ cubierto |
+| FR-036 | 004 | — | ⚠️ sin prueba |
+| FR-037 | 004 | TC-003-24, TC-003-25, TC-003-26 | ✅ cubierto |
+| FR-038 | 004 | — | ⚠️ sin prueba |
+| FR-039 | 004 | — | ⚠️ sin prueba |
+| FR-039a | 004 | — | ⚠️ sin prueba |
+| FR-039b | 004 | TC-003-35, TC-003-36, TC-003-37, TC-003-38, TC-003-41, TC-003-42, TC-006-06, TC-BN-13, TC-BN-19, TC-PAY-11, TC-PAY-12 | ✅ cubierto |
+| FR-039c | 004 | — | ⚠️ sin prueba |
+| FR-039e | 004 | — | ⚠️ sin prueba |
+| FR-039d | 004 | — | ⚠️ sin prueba |
+| NFR-005 | 004 | — | ⚠️ sin prueba |
+| NFR-006 | 004 | — | ⚠️ sin prueba |
+| NFR-009 | 004 | TC-006-02, TC-006-03, TC-006-04, TC-006-09, TC-BN-05, TC-BN-06, TC-BN-07, TC-BN-18, TC-PAY-05 | ✅ cubierto |
 | FR-070 | 007 | TC-003-27 | ✅ cubierto |
 | FR-071 | 007 | TC-003-49 | ✅ cubierto |
 | FR-072 | 007 | TC-003-48, TC-003-50, TC-003-52, TC-003-53, TC-003-54 | ✅ cubierto |
@@ -65,7 +85,7 @@
 | FR-076 | 007 | — | ⏳ fase aún no implementada |
 | FR-077 | 007 | — | ⏳ fase aún no implementada |
 | FR-078 | 007 | — | ⏳ fase aún no implementada |
-| FR-083 | 007 | TC-003-43, TC-003-44, TC-003-45, TC-003-46, TC-003-47 | ✅ cubierto |
+| FR-083 | 007 | TC-003-43, TC-003-44, TC-003-45, TC-003-46, TC-003-47, TC-PAY-14 | ✅ cubierto |
 | FR-084 | 007 | TC-003-58, TC-003-59, TC-003-60 | ✅ cubierto |
 | FR-085 | 007 | — | ⏳ fase aún no implementada |
 | FR-079 | 007 | TC-003-57 | ✅ cubierto |
@@ -88,7 +108,7 @@
 | FR-100 | 008 | TC-005-01, TC-005-02, TC-005-03, TC-005-04, TC-005-05, TC-005-06, TC-005-07, TC-005-09 | ✅ cubierto |
 | NFR-012 | 008 | — | ⏳ fase aún no implementada |
 
-**En alcance de lo implementado:** 31 requisitos · **con prueba automatizada:** 28 (90 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 0.
+**En alcance de lo implementado:** 49 requisitos · **con prueba automatizada:** 36 (73 %) · **solo prueba manual pendiente:** 3 · **sin prueba:** 10.
 **Fuera de alcance por ahora:** 25 requisitos de fases futuras. Las specs en borrador (004, 005, 006) no se miden todavía.
 
 ## Pruebas manuales (registro en `manual-results.md`)
@@ -227,6 +247,19 @@
 | TC-003-58 | FR-084 | FR-084 el admin ve pagos confirmados y en revisión | `003_orders.sql` | ✅ PASS |
 | TC-003-59 | FR-084 | FR-084 cada pago confirmado trae pagador y enlace de comprobante | `003_orders.sql` | ✅ PASS |
 | TC-003-60 | FR-084 | FR-084 el vendedor no accede al reporte global | `003_orders.sql` | ✅ PASS |
+| TC-006-01 | FR-032 | FR-032 el camino rápido entrega solo pagos pendientes y recientes (A y F) | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-02 | NFR-009 | NFR-009 un pago recién consultado no se vuelve a entregar antes del tiempo mínimo | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-03 | NFR-009 | NFR-009 se marca la hora de consulta solo de los entregados | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-04 | NFR-009 | NFR-009 se respeta el límite pedido | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-05 | FR-032 | FR-032 con una ventana mayor también entrega pagos más antiguos | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-06 | FR-039b | FR-039b cruzar con el banco devuelve pendientes y cancelados recientes, no pagados, no muy antiguos ni desconocidos | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-07 | FR-032 | FR-032 una lista vacía no devuelve nada | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-08 | FR-032 | FR-032 la pantalla de pago puede consultar su pedido pendiente | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-09 | NFR-009 | NFR-009 no se consulta al banco más de una vez cada pocos segundos por pedido | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-10 | FR-034 | FR-034 un pedido ya pagado no se vuelve a consultar | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-11 | FR-031 | FR-031 el cliente no puede ejecutar payments_to_check | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-12 | FR-031 | FR-031 el cliente no puede ejecutar payments_by_qr | `006_payment_checks.sql` | ✅ PASS |
+| TC-006-13 | FR-031 | FR-031 el cliente no puede ejecutar claim_payment_check | `006_payment_checks.sql` | ✅ PASS |
 | TC-004-01 | NFR-004 | NFR-004 de 20 pagos simultáneos por 1 unidad, exactamente 1 queda pagado | `004_concurrency` | ✅ PASS |
 | TC-004-02 | NFR-004 | NFR-004 los otros 19 pagos quedan en revisión | `004_concurrency` | ✅ PASS |
 | TC-004-03 | NFR-004 | NFR-004 el stock termina en 0, nunca negativo | `004_concurrency` | ✅ PASS |
@@ -324,3 +357,43 @@
 | DIN-03 | — | formato en bolivianos | `qr-baneco-demo` | ✅ PASS |
 | DIN-04 | — | la glosa nunca pasa de 100 caracteres y empieza por el código del pedido | `qr-baneco-demo` | ✅ PASS |
 | DIN-05 | — | la fecha de vencimiento es yyyy-MM-dd en hora de La Paz | `qr-baneco-demo` | ✅ PASS |
+| DIN-06 | — | hoyBolivia usa la fecha de La Paz (UTC-4), no la de UTC | `qr-baneco-demo` | ✅ PASS |
+| TC-BN-01 | FR-031 | FR-031 cifrado AES-256-CBC: ida y vuelta y IV distinto cada vez | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-02 | FR-031 | FR-031 la llave debe medir 32 caracteres | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-03 | FR-031 | FR-031 sin contraseña configurada no arranca (falla cerrado) | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-04 | FR-031 | FR-031 passwordFrom=usuario cifra el usuario; vacio cifra cadena vacía | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-05 | NFR-009 | NFR-009 varias llamadas a la vez comparten UNA sola sesión | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-06 | NFR-009 | NFR-009 la sesión se renueva antes de vencer | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-07 | NFR-009 | NFR-009 si el banco responde 401 se vuelve a entrar una vez y se reintenta | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-08 | FR-031 | FR-031 usuario no habilitado: error claro sin exponer secretos | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-09 | FR-031 | FR-031 generateQR: monto decimal exacto, único uso, monto fijo, cuenta cifrada | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-10 | FR-031 | FR-031 generateQR rechaza montos y fechas inválidos | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-11 | FR-031 | FR-031 la glosa nunca pasa de 100 caracteres ni lleva emojis o saltos de línea | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-12 | FR-032 | FR-032 statusQR entiende statusQrCode y payment como lista | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-13 | FR-039b | FR-039b cancelQR lanza error si el banco no anula (QR ya pagado) | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-14 | FR-032 | FR-032 paidQR lanza error si el banco falla (nunca devuelve "vacío" por un fallo) | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-15 | FR-032 | FR-032 un aviso falso (QR que el banco no conoce) se ignora | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-16 | FR-032 | FR-032 un aviso que dice "pagado" pero el banco dice pendiente no confirma | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-17 | FR-032 | FR-032 si el banco no responde al verificar un aviso, se lanza error para que reintente | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-18 | NFR-009 | NFR-009 tiempo de espera: un banco que no contesta no cuelga la función | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-19 | FR-039b | FR-039b la fecha de Bolivia (UTC-4) no es la de UTC a medianoche | `edge-functions-cobro` | ✅ PASS |
+| TC-BN-20 | NFR-004 | NFR-004 bancoFromEnv exige los secretos y valida PASSWORD_FROM | `edge-functions-cobro` | ✅ PASS |
+| TC-HTTP-01 | NFR-004 | NFR-004 safeEqual falla cerrado con valores vacíos o distintos | `edge-functions-cobro` | ✅ PASS |
+| TC-HTTP-02 | NFR-004 | NFR-004 las tareas programadas exigen CRON_SECRET (y sin secreto configurado nadie entra) | `edge-functions-cobro` | ✅ PASS |
+| TC-HTTP-03 | NFR-004 | NFR-004 el aviso del banco exige el token Bearer | `edge-functions-cobro` | ✅ PASS |
+| TC-HTTP-04 | NFR-004 | NFR-004 CORS solo permite los orígenes configurados | `edge-functions-cobro` | ✅ PASS |
+| TC-HTTP-05 | NFR-004 | NFR-004 los errores internos no filtran detalles | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-01 | FR-031 | FR-031 crea el QR con el monto del pedido y lo registra | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-02 | FR-031 | FR-031 crear el QR dos veces no genera otro (idempotente) | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-03 | FR-031 | FR-031 no se crea QR de un pedido ajeno, pagado o vencido | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-04 | FR-032 | FR-032 camino 1: la pantalla confirma el pago y guarda quién pagó | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-05 | NFR-009 | NFR-009 consultar otra vez de inmediato no llama al banco | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-06 | FR-032 | FR-032 camino 3: la revisión periódica confirma con la lista de pagados | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-07 | FR-034 | FR-034 un pago confirmado por dos caminos cuenta una sola vez | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-08 | FR-032 | FR-032 camino 3: un fallo del banco no confirma nada ni rompe la revisión | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-09 | FR-032 | FR-032 camino 2: aviso legítimo confirma; aviso falso no | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-10 | FR-033 | FR-033 monto distinto al del pedido va a revisión, no se entrega | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-11 | FR-039b | FR-039b vencimiento: se anula el QR en el banco | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-12 | FR-039b | FR-039b vencimiento: si justo se había pagado, el pago tardío se honra | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-13 | FR-033 | FR-033 el banco informa decimales: los centavos no pierden exactitud | `edge-functions-cobro` | ✅ PASS |
+| TC-PAY-14 | FR-083 | FR-083 la hora del pago es la de Bolivia convertida a UTC | `edge-functions-cobro` | ✅ PASS |

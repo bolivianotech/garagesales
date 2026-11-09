@@ -8,7 +8,7 @@ import path from 'node:path'
 import { cargarEnv, leerConfig } from '../src/config.mjs'
 import { Bank, BankError } from '../src/bank.mjs'
 import { catalogoDemo, Pedidos } from '../src/pedidos.mjs'
-import { armarGlosa, fechaVencimiento, formatearBs } from '../src/dinero.mjs'
+import { armarGlosa, fechaVencimiento, formatearBs, hoyBolivia } from '../src/dinero.mjs'
 import { descifrar, EJEMPLO_MANUAL } from '../src/aes.mjs'
 
 cargarEnv()
@@ -48,7 +48,7 @@ try {
   const p = estado.pago || {}
   console.log(`   Pagó: ${p.senderName} · Banco ${p.senderBankCode} · Cuenta ${p.senderAccount} · Monto ${p.amount} ${p.currency} · ${p.paymentDate?.slice(0, 10)} ${p.paymentTime}`)
   paso(Math.round(p.amount * 100) === pedido.totalCentavos, 'El monto pagado coincide con el total del pedido')
-  const hoy = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const hoy = hoyBolivia()
   paso((await bank.paidQR(hoy)).some((x) => x.qrId === qr.qrId), 'El QR aparece en la lista de pagados del día (conciliación)')
   console.log('\nTODO CORRE NORMALMENTE (banco real)\n')
 } catch (e) {

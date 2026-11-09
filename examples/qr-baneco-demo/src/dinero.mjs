@@ -14,10 +14,13 @@ export const bsACentavos = (bs) => Math.round(Number(bs) * 100)
 export function armarGlosa(codigo, items) {
   const cuerpo = items.map((i) => `${i.qty}x ${i.sku}`).join(', ')
   const glosa = `${codigo} ${cuerpo}`
-  return glosa.length <= 100 ? glosa : glosa.slice(0, 99) + '…'
+  return glosa.length <= 100 ? glosa : glosa.slice(0, 100)
 }
 
 // dueDate del banco es solo fecha (yyyy-MM-dd). Se calcula en hora de La Paz.
+// Fecha de hoy en Bolivia (UTC-4) como yyyymmdd: el banco lista los pagados por día boliviano, no por día UTC.
+export const hoyBolivia = (ahora = new Date()) => new Date(ahora.getTime() - 4 * 3600_000).toISOString().slice(0, 10).replace(/-/g, '')
+
 export function fechaVencimiento(dias = 1, ahora = new Date()) {
   const futuro = new Date(ahora.getTime() + dias * 86_400_000)
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz', year: 'numeric', month: '2-digit', day: '2-digit' }).format(futuro)

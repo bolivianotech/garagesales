@@ -21,9 +21,14 @@ test('DIN-04 la glosa nunca pasa de 100 caracteres y empieza por el código del 
   const corta = armarGlosa('D-0001', [{ qty: 1, sku: 'CAM-001' }, { qty: 2, sku: 'GOR-002' }])
   assert.equal(corta, 'D-0001 1x CAM-001, 2x GOR-002')
   const larga = armarGlosa('D-0002', Array.from({ length: 30 }, (_, i) => ({ qty: 1, sku: 'SKU-' + i })))
-  assert.ok(larga.length <= 100 && larga.startsWith('D-0002') && larga.endsWith('…'))
+  assert.ok(larga.length <= 100 && larga.startsWith('D-0002') && /^[\x20-\x7E]+$/.test(larga))
 })
 test('DIN-05 la fecha de vencimiento es yyyy-MM-dd en hora de La Paz', () => {
   assert.match(fechaVencimiento(1), /^\d{4}-\d{2}-\d{2}$/)
   assert.equal(fechaVencimiento(0, new Date('2026-11-09T02:00:00Z')), '2026-11-08') // 22:00 del 8 en La Paz (UTC-4)
+})
+test('DIN-06 hoyBolivia usa la fecha de La Paz (UTC-4), no la de UTC', async () => {
+  const { hoyBolivia } = await import('../src/dinero.mjs')
+  assert.equal(hoyBolivia(new Date('2026-11-10T02:00:00Z')), '20261109')
+  assert.equal(hoyBolivia(new Date('2026-11-10T05:00:00Z')), '20261110')
 })

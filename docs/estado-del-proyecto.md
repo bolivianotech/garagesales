@@ -11,7 +11,7 @@
 | 2 | Catálogo del vendedor y catálogo público | ✅ Hecha y probada | `TC-002-xx` (31), `MT-04..08`, `MT-10` OK; `MT-03` parcial |
 | 3 | Pedidos, confirmación de pago, comprobante, retiros (**base de datos**) | ✅ Hecha y probada en local | `TC-003-xx` (60), `TC-004-xx` (5, concurrencia real) |
 | 3 | Pedidos (**pantallas**: carrito, pago, mis pedidos, comprobante, "Por entregar") | ⏳ Pendiente | — |
-| 4 | Cobro con QR dinámico (Edge Functions + pantalla de pago) | ⏳ Pendiente; bloqueada por el banco | ver sección 3 |
+| 4 | Cobro con QR dinámico (Edge Functions + pantalla de pago) | 🟡 Edge Functions y SQL de apoyo escritos y probados con banco simulado (`TC-BN`, `TC-PAY`, `TC-HTTP`, `TC-006`); **sin probar contra el banco ni Supabase reales**; falta la pantalla de pago | `docs/integraciones/conector-del-programador.md` |
 | 4b | Libro mayor, comisión 1 %, liquidaciones, datos de cobro del vendedor | ⏳ Pendiente (specs 006 y 008) | — |
 | 5 | PWA instalable y modo sin red | ⏳ Pendiente (spec 005) | — |
 | 6 | UAT, E2E, limpieza y lanzamiento | 📄 Guías y scripts listos; limpieza y E2E de humo **probados**; UAT, E2E completo y lanzamiento pendientes | `docs/uat/`, `e2e/`, `supabase/maintenance/` (`TC-005-xx`, `TC-SCR-xx`, `E2E-01..05`) |
