@@ -23,4 +23,4 @@ mkdir ~/deckdeps && cd ~/deckdeps && npm init -y && npm install pptxgenjs react 
 # desde la raíz del repositorio:
 NODE_PATH=~/deckdeps/node_modules node docs/presentations/src/build_taller.js
 ```
-El script usa la herramienta de PowerPoint del asistente para aplicar el tema; si no la tienes, comenta las dos líneas de `applyTheme` y ajusta los colores a mano. Las cifras (201 pruebas; 63 / 115 / 13 / 5 casos) salen de `docs/testing/reports/latest.md`: actualízalas si cambian.
+El script usa la herramienta de PowerPoint del asistente para aplicar el tema; si no la tienes, comenta las dos líneas de `applyTheme` y ajusta los colores a mano. Las cifras se leen solas de `docs/testing/reports/latest.md` al generar el archivo: primero corre `python3 -I scripts/test_report.py` y luego el script.

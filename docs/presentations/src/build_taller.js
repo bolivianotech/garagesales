@@ -22,6 +22,19 @@ const THEME = {
 }
 const HEX = THEME.colors
 
+// Cifras tomadas del reporte automático para que la presentación no se desactualice.
+const fs = require('fs')
+function leerReporte() {
+  const t = fs.readFileSync(path.join(__dirname, '..', '..', 'testing', 'reports', 'latest.md'), 'utf8')
+  const n = (re) => { const m = t.match(re); if (!m) throw new Error('No se encontró en el reporte: ' + re); return Number(m[1]) }
+  const total = n(/\*\*(\d+) OK \//), fallas = n(/\/ (\d+) fallan\*\*/)
+  const db = n(/001_rls\.sql` \| ✅ \| (\d+)/) + n(/002_products\.sql` \| ✅ \| (\d+)/) + n(/003_orders\.sql` \| ✅ \| (\d+)/)
+  const conc = n(/004_concurrency` \| ✅ \| (\d+)/), limpieza = n(/005_cleanup` \| ✅ \| (\d+)/)
+  const basicas = n(/Vitest \| ✅ \| (\d+)\//) + n(/node --test\) \| ✅ \| (\d+)\//) + n(/escáner de secretos \| ✅ \| (\d+)\//) + n(/banco simulado\) \| ✅ \| (\d+)\//)
+  return { total, fallas, db, conc, limpieza, basicas }
+}
+const R = leerReporte()
+
 const pres = new pptxgen()
 pres.layout = 'LAYOUT_WIDE' // 13.33 x 7.5 pulgadas
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace }
@@ -116,7 +129,7 @@ async function build() {
   s.addText('Dos días, un sistema completo', { placeholder: 'title' })
   const stats = [
     ['≈18 h', 'de trabajo efectivo (estimado) entre el 6 y el 8 de noviembre de 2026', HEX.accent1],
-    ['201', 'pruebas automáticas, 0 fallas', HEX.accent3],
+    [String(R.total), `pruebas automáticas, ${R.fallas} fallas`, HEX.accent3],
     ['8', 'specs con requisitos numerados y aprobados por el dueño', HEX.accent4],
   ]
   stats.forEach(([n, l, col], i) => {
@@ -125,7 +138,7 @@ async function build() {
     text(s, n, { x: x + 0.3, y: 2.3, w: 3.3, h: 1.6, fontSize: 72, bold: true, color: col, fontFace: THEME.headFontFace, valign: 'middle' })
     text(s, l, { x: x + 0.3, y: 4.1, w: 3.3, h: 1.8, fontSize: 20, color: C.text1, valign: 'top' })
   })
-  s.addNotes('Sé honesto con las cifras: las 18 horas son una estimación del trabajo efectivo según el volumen de cada entrega; el historial de git solo registra cuándo se hizo cada commit. Las 201 pruebas salen del reporte generado automáticamente (docs/testing/reports/latest.md).')
+  s.addNotes(`Sé honesto con las cifras: las 18 horas son una estimación del trabajo efectivo según el volumen de cada entrega; el historial de git solo registra cuándo se hizo cada commit. Las ${R.total} pruebas salen del reporte generado automáticamente (docs/testing/reports/latest.md).`)
 
   // 3. Flujo de compra
   s = ns('CONTENIDO', 'Qué construimos')
@@ -273,9 +286,9 @@ async function build() {
   const pyr = [
     ['UAT por rol', 'personas reales', '55 casos escritos', HEX.accent6],
     ['E2E', 'navegador real', '5 ejecutados · 9 escritos', HEX.accent2],
-    ['Concurrencia', '20 pagos simultáneos', '5 casos', HEX.accent4],
-    ['Base de datos', 'seguridad y reglas', '115 + 13 de limpieza', HEX.accent3],
-    ['Unitarias y demo QR', 'dinero, fotos, cifrado, API', '63 casos', HEX.accent1],
+    ['Concurrencia', '20 pagos simultáneos', `${R.conc} casos`, HEX.accent4],
+    ['Base de datos', 'seguridad y reglas', `${R.db} + ${R.limpieza} de limpieza`, HEX.accent3],
+    ['Unitarias y demo QR', 'dinero, fotos, cifrado, API', `${R.basicas} casos`, HEX.accent1],
   ]
   pyr.forEach(([t1, t2, t3, col], i) => {
     const w = 3.4 + i * 0.85, x = 0.6 + (7.4 - w) / 2, y = 1.75 + i * 0.98
@@ -283,7 +296,7 @@ async function build() {
     text(s, `${t1} · ${t2}`, { x, y, w, h: 0.88, fontSize: 16, bold: true, color: C.background1, align: 'center', valign: 'middle', fontFace: THEME.headFontFace })
     text(s, t3, { x: 8.3, y, w: 4.4, h: 0.88, fontSize: 18, color: C.text1, valign: 'middle' })
   })
-  text(s, '201 pruebas automáticas, 0 fallas', { x: 0.6, y: 6.6, w: 7.4, h: 0.4, fontSize: 18, color: C.accent1, bold: true, align: 'center' })
+  text(s, `${R.total} pruebas automáticas, ${R.fallas} fallas`, { x: 0.6, y: 6.6, w: 7.4, h: 0.4, fontSize: 18, color: C.accent1, bold: true, align: 'center' })
   s.addNotes('Abajo, muchas pruebas rápidas y baratas; arriba, pocas pruebas lentas con personas. Cifras tomadas del reporte docs/testing/reports/latest.md. Las pruebas E2E @live y @full están escritas pero aún no se ejecutan: necesitan el sistema real y las pantallas de compra.')
 
   // 11. Fin de semana
