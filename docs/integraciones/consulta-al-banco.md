@@ -9,7 +9,7 @@ Estas son las dudas que bloquean pasar de "pruebas locales" a "cobros reales". S
 Buenos días. Estamos integrando QR Simple (generateQR, statusQR, cancelQR, paidQR) y consulta de movimientos con el usuario API **A24627210**, tipo de uso APIMARKET. Necesitamos confirmar lo siguiente:
 
 1. **Autenticación (`/api/authentication/authenticate`):** el manual pide `userName` y `password` (cifrado). Nuestro portal solo muestra el usuario y la llave AES; no recibimos ninguna contraseña. ¿Qué valor debe ir en `password` y cómo se obtiene o se genera?
-2. **Cifrado AES-256:** ¿qué modo (CBC, ECB, GCM), qué vector de inicialización, qué relleno (PKCS7) y en qué formato se interpreta la llave (32 caracteres de texto o 64 caracteres hexadecimales)? ¿Pueden darnos un ejemplo con texto plano, llave de prueba y resultado esperado?
+2. **Cifrado AES-256:** deducimos del ejemplo del manual que es AES-256-CBC, llave de 32 caracteres como texto, IV de 16 bytes antepuesto y relleno PKCS#7. ¿Pueden **confirmarlo**?
 3. **Certificación:** ¿nuestro usuario ya está habilitado en `https://apimktdesa.baneco.com.bo/ApiGateway/`? ¿Con qué cuenta de abono de pruebas (`accountCredit`) podemos generar QR y cómo se simula un pago en ese ambiente?
 4. **Notificación de pago (`notifyPaymentQR`):** registramos la URL en el portal. ¿Desde qué IP salen las notificaciones, qué tipo de autorización admiten (Bearer, Basic) y cuántos reintentos hacen si respondemos con error?
 5. **Producción:** URL base de producción, proceso y tiempos para pasar de certificación a producción, y si la llave AES y el usuario cambian.

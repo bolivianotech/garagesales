@@ -37,3 +37,11 @@ begin
   if n <> p_expected then raise exception 'FALLÓ %: filas afectadas esperadas %, obtenidas %', p_label, p_expected, n; end if;
   raise notice 'OK   %', p_label;
 end $$;
+
+create or replace function pg_temp.expect_value(p_sql text, p_expected text, p_label text) returns void language plpgsql as $$
+declare v text;
+begin
+  execute p_sql into v;
+  if v is distinct from p_expected then raise exception 'FALLÓ %: esperado %, obtenido %', p_label, p_expected, coalesce(v, 'NULL'); end if;
+  raise notice 'OK   %', p_label;
+end $$;

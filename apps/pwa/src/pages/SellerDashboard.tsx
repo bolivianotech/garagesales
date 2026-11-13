@@ -47,6 +47,9 @@ export function SellerDashboard() {
           <Link className="btn secondary" to="/vender/carga-rapida">
             Carga rápida
           </Link>
+          <Link className="btn secondary" to="/vender/entregas">
+            Por entregar
+          </Link>
         </div>
       </div>
       {store && <p className="muted">Tienda: {store.name}</p>}

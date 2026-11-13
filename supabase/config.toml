@@ -9,3 +9,15 @@ minimum_password_length = 8
 [auth.mfa.totp]
 enroll_enabled = true
 verify_enabled = true
+
+# Edge Functions de cobro. Las tareas programadas y el aviso del banco no traen sesión de usuario: se protegen con secretos propios.
+[functions.create-qr]
+verify_jwt = true
+[functions.check-order]
+verify_jwt = true
+[functions.check-payments]
+verify_jwt = false
+[functions.expire-orders]
+verify_jwt = false
+[functions.notify-payment]
+verify_jwt = false

@@ -31,6 +31,16 @@
 | Q30 | **Aplicar la migración** en Supabase y habilitar Google/confirmación de correo (ver `docs/setup-supabase.md`). | T9, T11 |
 | Q15 | Dominio temporal gratuito (propuesta: Cloudflare Pages `*.pages.dev`). ¿Tienes cuenta de Cloudflare? | T13 |
 
+## Abiertas nuevas (2026-11-08)
+| # | Pregunta | Bloquea |
+|---|---|---|
+| Q31 | **Rotar la llave AES y la credencial de API** (se expusieron en un repo público), **pasar el repositorio a privado**, fusionar la rama limpia `claude/garagesales-limpia-ivzqi8` y **borrar la rama anterior**. Ver `docs/handbook/09-seguridad-y-secretos.md`. | Todo uso real del banco |
+| Q32 | El banco responde `404 "Usuario no habilitado para uso de apis"` a `authenticate`: pedir la habilitación del usuario en certificación (punto 3 de la consulta). | Fase 4 |
+| Q33 | El estudiante que integró QR Conecta en 2 sistemas puede aclarar: qué lleva `password`, modo AES/IV/relleno, ambiente y usuario que usó. Compartir **solo explicación**, nunca llaves. | Fase 4 |
+| Q34 | Confirmar el mínimo de pago por QR (¿Bs 0,01?) para los UAT. | UAT |
+| Q35 | Foto del comprobante del comprador (FR-085): ¿obligatoria u opcional? Propuesta: opcional, hasta 3 imágenes. | E2 |
+| Q36 | Contraseña del usuario de certificación: el dueño dice que no tiene, pero `password` es obligatorio en `authenticate`. ¿El banco acepta cadena vacía o el propio usuario cifrado? Probar con `diagnosticar-password` y confirmar con el banco. | E1 |
+
 ## Resueltas en esta ronda
 - **Q16:** proyecto Supabase `garajesales` creado (ref `pfhgqoeobboriounehat`).
 - **Q23:** el banco **no exige IP fija**; las Edge Functions funcionan sin proxy.

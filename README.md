@@ -17,6 +17,13 @@ Marketplace de garage sales: los **vendedores** publican productos (foto, precio
 | [`docs/testing/manual-test-guide.md`](docs/testing/manual-test-guide.md) | Guía paso a paso para ejecutar las pruebas manuales |
 | [`docs/testing/manual-results.md`](docs/testing/manual-results.md) | Registro de resultados de las pruebas manuales |
 | [`docs/testing/reports/latest.md`](docs/testing/reports/latest.md) | Último reporte de pruebas (resultados y cobertura por requisito) |
+| [`docs/estado-del-proyecto.md`](docs/estado-del-proyecto.md) | **Qué está hecho, qué falta, cuánto tarda y qué bloquea** |
+| [`docs/handbook/`](docs/handbook/00-indice.md) | Manual para construir y replicar el sistema (método, cronología, plan de fin de semana, lecciones) |
+| [`docs/runbooks/`](docs/runbooks) | Integración del QR, operación diaria y limpieza de datos |
+| [`docs/manuales/`](docs/manuales) | Manuales de usuario: comprador, vendedor, admin general, finanzas |
+| [`docs/uat/`](docs/uat/00-plan-uat.md) | Pruebas de aceptación por rol (55 casos) |
+| [`docs/testing/e2e-plan.md`](docs/testing/e2e-plan.md) | Plan de pruebas integrales (E2E) |
+| [`examples/qr-baneco-demo/`](examples/qr-baneco-demo/GUIA.md) | **Proyecto independiente** de 1 o 2 productos con QR del banco (para entregar al programador sin dar acceso a este repositorio) |
 | [`docs/open-questions.md`](docs/open-questions.md) | Preguntas abiertas que bloquean specs |
 | [`specs/`](specs) | Una carpeta por feature: `spec.md` → `plan.md` → `tasks.md` |
 

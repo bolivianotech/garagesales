@@ -1,0 +1,8 @@
+# Secretos y datos: NUNCA al repositorio ni se comparten
+.env
+.env.*
+!.env.example
+data/*.json
+salida/
+node_modules/
+*.log

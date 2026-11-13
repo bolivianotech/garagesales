@@ -1,0 +1,17 @@
+{
+  "name": "qr-baneco-demo",
+  "version": "1.0.0",
+  "description": "Demo mínima: genera un QR de 1 o 2 productos con la API del Banco Económico y muestra la confirmación del pago. Sin dependencias.",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.mjs",
+    "mock": "BANK_MODE=mock node server.mjs",
+    "test": "node --test",
+    "verificar": "node scripts/verificar-mock.mjs",
+    "verificar:real": "node scripts/verificar-real.mjs",
+    "probar-aes": "node scripts/probar-aes.mjs",
+    "diagnosticar-password": "node scripts/diagnosticar-password.mjs"
+  }
+}

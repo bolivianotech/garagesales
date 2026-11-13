@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Demo QR · Banco Económico</title>
+<style>
+  :root { --bg:#f6f6f4; --fg:#161616; --card:#fff; --line:#e0e0dc; --ok:#0a7d3b; --warn:#a15c00; --muted:#666; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#121212; --fg:#f1f1ef; --card:#1c1c1c; --line:#2c2c2c; --ok:#4cd98a; --warn:#ffb454; --muted:#9a9a96; } }
+  * { box-sizing:border-box } body { margin:0; font:16px system-ui,sans-serif; background:var(--bg); color:var(--fg) }
+  main { max-width:560px; margin:0 auto; padding:16px; display:grid; gap:16px }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; display:grid; gap:12px }
+  h1,h2 { margin:0 } .muted { color:var(--muted); font-size:14px; margin:0 }
+  .fila { display:flex; justify-content:space-between; align-items:center; gap:8px }
+  input[type=number] { width:70px; font:inherit; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--fg) }
+  button { font:inherit; padding:12px 16px; border-radius:8px; border:0; background:var(--fg); color:var(--bg); cursor:pointer }
+  button.sec { background:transparent; color:var(--fg); border:1px solid var(--line) } button:disabled { opacity:.5 }
+  #qr img { width:100%; max-width:300px; image-rendering:pixelated; background:#fff; border-radius:8px; justify-self:center }
+  .estado { font-weight:700; padding:6px 12px; border-radius:999px; border:1px solid var(--line); justify-self:start }
+  .pagado { color:var(--ok); border-color:var(--ok) } .pendiente { color:var(--warn); border-color:var(--warn) }
+  .banner { padding:10px; border:1px dashed var(--warn); border-radius:8px; color:var(--warn); font-size:14px }
+  [hidden] { display:none !important }
+</style>
+</head>
+<body>
+<main>
+  <h1>Demo de cobro con QR</h1>
+  <p class="muted">Elige 1 o 2 productos, genera el QR del Banco Económico y mira cómo se confirma el pago.</p>
+  <div id="mock" class="banner" hidden>Modo SIMULADO: el QR no es escaneable. Usa “Simular pago” para ver la confirmación.</div>
+
+  <section class="card" id="seleccion">
+    <h2>1. Productos</h2>
+    <div id="productos"></div>
+    <div class="fila"><strong>Total</strong><strong id="total">Bs 0,00</strong></div>
+    <button id="generar" disabled>Generar QR de pago</button>
+    <p class="muted" id="error" role="alert"></p>
+  </section>
+
+  <section class="card" id="pago" hidden>
+    <h2>2. Paga con tu app bancaria</h2>
+    <div class="fila"><span>Pedido <strong id="codigo"></strong></span><span id="monto"></span></div>
+    <div id="qr"></div>
+    <div class="estado pendiente" id="estado">Esperando pago…</div>
+    <p class="muted" id="aviso"></p>
+    <div class="fila">
+      <button class="sec" id="cancelar">Anular QR</button>
+      <button id="simular" hidden>Simular pago</button>
+    </div>
+  </section>
+
+  <section class="card" id="listo" hidden>
+    <h2>✅ Pago confirmado</h2>
+    <div id="detalle"></div>
+    <button class="sec" id="otro">Nuevo pedido</button>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id)
+const bs = (c) => 'Bs ' + Math.floor(c / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + String(c % 100).padStart(2, '0')
+let productos = [], pedido = null, timer = null, modo = 'real'
+
+async function api(ruta, opciones) {
+  const r = await fetch(ruta, { headers: { 'Content-Type': 'application/json' }, ...opciones })
+  const j = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(j.error || 'Error ' + r.status)
+  return j
+}
+function pintarProductos() {
+  $('productos').innerHTML = ''
+  for (const p of productos) {
+    const f = document.createElement('div'); f.className = 'fila'
+    f.innerHTML = `<div><strong>${p.titulo}</strong><p class="muted">${p.sku} · ${bs(p.precioCentavos)}</p></div>`
+    const i = document.createElement('input'); i.type = 'number'; i.min = 0; i.max = 5; i.value = 0; i.id = 'q-' + p.id
+    i.setAttribute('aria-label', 'Cantidad de ' + p.titulo); i.oninput = recalcular
+    f.append(i); $('productos').append(f)
+  }
+}
+function seleccion() { return productos.map((p) => ({ id: p.id, qty: Number($('q-' + p.id).value) })).filter((x) => x.qty > 0) }
+function recalcular() {
+  const total = seleccion().reduce((s, x) => s + x.qty * productos.find((p) => p.id === x.id).precioCentavos, 0)
+  $('total').textContent = bs(total); $('generar').disabled = total === 0
+}
+async function generar() {
+  $('error').textContent = ''; $('generar').disabled = true
+  try {
+    pedido = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items: seleccion() }) })
+    $('seleccion').hidden = true; $('pago').hidden = false
+    $('codigo').textContent = pedido.codigo; $('monto').textContent = bs(pedido.totalCentavos)
+    $('qr').innerHTML = `<img alt="Código QR de pago por ${bs(pedido.totalCentavos)}" src="data:image/png;base64,${pedido.qrImage}" />`
+    $('simular').hidden = modo !== 'mock'
+    consultar(); timer = setInterval(consultar, 3000)
+  } catch (e) { $('error').textContent = e.message; $('generar').disabled = false }
+}
+async function consultar() {
+  try {
+    const p = await api('/api/orders/' + pedido.id); pedido = p
+    $('aviso').textContent = p.avisoBanco ? 'Aviso del banco: ' + p.avisoBanco : ''
+    if (p.estado === 'pagado') { clearInterval(timer); mostrarPagado(p) }
+    else if (p.estado === 'anulado') { clearInterval(timer); $('estado').textContent = 'QR anulado'; $('estado').className = 'estado' }
+  } catch (e) { $('aviso').textContent = e.message }
+}
+function mostrarPagado(p) {
+  $('pago').hidden = true; $('listo').hidden = false
+  const pg = p.pagador || {}
+  $('detalle').innerHTML = `<p>Pedido <strong>${p.codigo}</strong> · ${bs(p.totalCentavos)}</p>
+    <p>Pagó: <strong>${pg.nombre ?? '—'}</strong><br>Banco (código): ${pg.banco ?? '—'} · Cuenta: ${pg.cuenta ?? '—'}<br>Fecha y hora: ${(pg.fecha || '').slice(0, 10)} ${pg.hora ?? ''}</p>
+    <ul>${p.items.map((i) => `<li>${i.qty} × ${i.titulo} (${i.sku})</li>`).join('')}</ul>`
+}
+$('generar').onclick = generar
+$('cancelar').onclick = async () => { try { await api(`/api/orders/${pedido.id}/cancel`, { method: 'POST' }); consultar() } catch (e) { $('aviso').textContent = e.message } }
+$('simular').onclick = () => api(`/api/mock/pay/${pedido.id}`, { method: 'POST', body: JSON.stringify({ nombre: 'Ana Prueba' }) }).then(consultar)
+$('otro').onclick = () => location.reload()
+api('/api/config').then((c) => { productos = c.productos; modo = c.modo; $('mock').hidden = modo !== 'mock'; pintarProductos(); recalcular() })
+</script>
+</body>
+</html>
